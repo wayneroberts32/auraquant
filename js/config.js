@@ -6,12 +6,12 @@
 window.Config = {
     // API Configuration - Connected to Render backend
     API_BASE_URL: window.location.hostname === 'localhost' 
-        ? 'https://auraquant-backend.onrender.com/api'  // Use Render backend even locally
-        : 'https://auraquant-backend.onrender.com/api',  // Production Render URL
+        ? 'http://localhost:8000/api'  // Local development
+        : 'https://auraquant-api-prod.onrender.com/api',  // Production Render URL
     
     WS_URL: window.location.hostname === 'localhost'
-        ? 'wss://auraquant-backend.onrender.com/ws'  // Use Render backend even locally
-        : 'wss://auraquant-backend.onrender.com/ws',  // Production Render URL
+        ? 'ws://localhost:8000/ws'  // Local development
+        : 'wss://auraquant-api-prod.onrender.com/ws',  // Production Render URL
     
     // Environment
     ENVIRONMENT: window.location.hostname === 'localhost' ? 'development' : 'production',
