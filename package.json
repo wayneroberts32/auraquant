@@ -1,75 +1,24 @@
 {
   "name": "auraquant-infinity",
   "version": "1.0.0",
-  "description": "AuraQuant Infinity - Professional Live Trading Platform",
+  "description": "AuraQuant Infinity - Professional Live Trading Platform Frontend",
   "main": "index.html",
   "scripts": {
     "start": "echo 'Static site - no build needed'",
-    "build": "echo 'No build required - static site'",
-    "deploy": "wrangler pages deploy",
-    "dev": "python -m http.server 8080",
-    "test": "echo 'No tests configured'"
+    "build": "echo 'No build required - static site'"
   },
   "keywords": [
     "trading",
     "finance",
     "cryptocurrency",
     "forex",
-    "stocks",
-    "algorithmic-trading",
-    "bot-trading"
+    "stocks"
   ],
   "author": "AuraQuant Team",
   "license": "PROPRIETARY",
-  "dependencies": {
-    "axios": "^1.4.0",
-    "lightweight-charts": "^4.0.0",
-    "luxon": "^3.3.0",
-    "codemirror": "^5.65.2",
-    "socket.io-client": "^4.5.1",
-    "chart.js": "^4.3.0",
-    "ta-lib": "^0.11.0",
-    "technicalindicators": "^3.1.0",
-    "ccxt": "^3.0.0",
-    "alpaca-trade-api": "^2.15.0",
-    "@sendgrid/mail": "^7.7.0",
-    "node-telegram-bot-api": "^0.61.0",
-    "discord.js": "^14.11.0",
-    "twitter-api-v2": "^1.15.0",
-    "openai": "^3.3.0",
-    "anthropic": "^0.20.0",
-    "uuid": "^9.0.0",
-    "crypto-js": "^4.1.1",
-    "decimal.js": "^10.4.3"
-  },
-  "devDependencies": {
-    "@cloudflare/wrangler": "^3.0.0",
-    "webpack": "^5.88.0",
-    "webpack-cli": "^5.1.0",
-    "webpack-dev-server": "^4.15.0",
-    "babel-loader": "^9.1.0",
-    "@babel/core": "^7.22.0",
-    "@babel/preset-env": "^7.22.0",
-    "css-loader": "^6.8.0",
-    "style-loader": "^3.3.0",
-    "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^5.5.0",
-    "copy-webpack-plugin": "^11.0.0",
-    "terser-webpack-plugin": "^5.3.0",
-    "mini-css-extract-plugin": "^2.7.0",
-    "eslint": "^8.44.0",
-    "prettier": "^2.8.0",
-    "jest": "^29.5.0",
-    "@testing-library/jest-dom": "^5.16.0",
-    "dotenv": "^16.3.0"
-  },
+  "dependencies": {},
+  "devDependencies": {},
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "node": ">=18.0.0"
+  }
 }
