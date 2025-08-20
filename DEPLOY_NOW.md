@@ -46,7 +46,7 @@
 6. **Create Web Service**
    - Click "Create Web Service" button at bottom
    - Wait for deployment (takes 3-5 minutes)
-   - Your backend URL will be: `https://auraquant-backend.onrender.com`
+   - Your backend URL will be: `https://auraquant-api-prod.onrender.com`
 
 ---
 
@@ -91,13 +91,13 @@
 2. You should see your AuraQuant dashboard
 
 ### Test Backend:
-1. Open: https://auraquant-backend.onrender.com
+1. Open: https://auraquant-api-prod.onrender.com
 2. You should see a response from your API
 
 ### Test WebSocket:
 Open browser console (F12) on your frontend and run:
 ```javascript
-const ws = new WebSocket('wss://auraquant-backend.onrender.com/ws');
+const ws = new WebSocket('wss://auraquant-api-prod.onrender.com/ws');
 ws.onopen = () => console.log('Connected!');
 ```
 
@@ -114,7 +114,7 @@ $body = @{
     broker = "NAB"
 } | ConvertTo-Json
 
-Invoke-RestMethod -Uri "https://auraquant-backend.onrender.com/webhook/tradingview" `
+Invoke-RestMethod -Uri "https://auraquant-api-prod.onrender.com/webhook/tradingview"
     -Method Post `
     -Body $body `
     -ContentType "application/json"
@@ -126,13 +126,13 @@ Invoke-RestMethod -Uri "https://auraquant-backend.onrender.com/webhook/tradingvi
 
 ### Your Live URLs:
 - **Dashboard**: https://auraquant-dashboard.pages.dev
-- **API**: https://auraquant-backend.onrender.com
-- **Webhook**: https://auraquant-backend.onrender.com/webhook/tradingview
-- **WebSocket**: wss://auraquant-backend.onrender.com/ws
+- **API**: https://auraquant-api-prod.onrender.com
+- **Webhook**: https://auraquant-api-prod.onrender.com/webhook/tradingview
+- **WebSocket**: wss://auraquant-api-prod.onrender.com/ws
 
 ### Configure TradingView:
 1. Go to TradingView
-2. Add webhook URL: `https://auraquant-backend.onrender.com/webhook/tradingview`
+2. Add webhook URL: `https://auraquant-api-prod.onrender.com/webhook/tradingview`
 3. Include token in alert message
 
 ### Future Updates:
