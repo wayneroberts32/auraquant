@@ -1,0 +1,11 @@
+AuraQuant Deployment Test
+==========================
+Timestamp: 2025-01-20 12:27:00 UTC
+GitHub Repo: wayneroberts32/auraquant
+Branch: main
+Frontend: Cloudflare Pages
+Backend: Render
+
+This file confirms the deployment is working correctly.
+If you can see this file at https://ai-auraquant.com/deployment-test.txt
+then the GitHub connection and deployment is working!
