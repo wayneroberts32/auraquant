@@ -1,0 +1,712 @@
+/* AuraQuant Infinity - Professional Animations */
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Pulse Glow Animation for Logo */
+@keyframes pulseGlow {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+    }
+    50% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 40px rgba(0, 212, 255, 0.8));
+    }
+}
+
+/* Rotating Animation */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Shimmer Effect */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+/* Wave Animation */
+@keyframes wave {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-10px);
+    }
+    75% {
+        transform: translateY(10px);
+    }
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-20px);
+    }
+    60% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Flash Animation */
+@keyframes flash {
+    0%, 50%, 100% {
+        opacity: 1;
+    }
+    25%, 75% {
+        opacity: 0.3;
+    }
+}
+
+/* Shake Animation */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-10px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(10px);
+    }
+}
+
+/* Ripple Effect */
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Gradient Animation */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Market Ticker Animation */
+@keyframes ticker {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Success Check Animation */
+@keyframes successCheck {
+    0% {
+        stroke-dashoffset: 100;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Loading Dots */
+@keyframes loadingDots {
+    0%, 20% {
+        color: rgba(255, 255, 255, 0);
+        text-shadow: 0.25em 0 0 rgba(255, 255, 255, 0),
+                     0.5em 0 0 rgba(255, 255, 255, 0);
+    }
+    40% {
+        color: rgba(255, 255, 255, 1);
+        text-shadow: 0.25em 0 0 rgba(255, 255, 255, 0),
+                     0.5em 0 0 rgba(255, 255, 255, 0);
+    }
+    60% {
+        text-shadow: 0.25em 0 0 rgba(255, 255, 255, 1),
+                     0.5em 0 0 rgba(255, 255, 255, 0);
+    }
+    80%, 100% {
+        text-shadow: 0.25em 0 0 rgba(255, 255, 255, 1),
+                     0.5em 0 0 rgba(255, 255, 255, 1);
+    }
+}
+
+/* Chart Line Animation */
+@keyframes drawLine {
+    from {
+        stroke-dashoffset: 1000;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Notification Slide */
+@keyframes notificationSlide {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Bot Status Pulse */
+@keyframes botPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 255, 136, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 136, 0);
+    }
+}
+
+/* Emergency Flash */
+@keyframes emergencyFlash {
+    0%, 100% {
+        background-color: transparent;
+    }
+    50% {
+        background-color: rgba(255, 51, 102, 0.2);
+    }
+}
+
+/* Profit Glow */
+@keyframes profitGlow {
+    0%, 100% {
+        text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(0, 255, 136, 1);
+    }
+}
+
+/* Loss Shake */
+@keyframes lossShake {
+    0%, 100% {
+        transform: translateX(0);
+        color: #ff3366;
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Connection Status */
+@keyframes connectionPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.3;
+    }
+}
+
+/* Order Fill Animation */
+@keyframes orderFill {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Scanner Radar */
+@keyframes radarSweep {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Price Update Flash */
+@keyframes priceUpdate {
+    0% {
+        background-color: transparent;
+    }
+    50% {
+        background-color: rgba(0, 212, 255, 0.2);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+/* Animated Classes */
+
+.animated-logo {
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.5s ease-out forwards;
+}
+
+.slide-in-right {
+    animation: slideInRight 0.5s ease-out forwards;
+}
+
+.slide-in-up {
+    animation: slideInUp 0.5s ease-out forwards;
+}
+
+.slide-in-down {
+    animation: slideInDown 0.5s ease-out forwards;
+}
+
+.rotating {
+    animation: rotate 2s linear infinite;
+}
+
+.shimmer {
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0) 0%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        rgba(255, 255, 255, 0) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+}
+
+.wave {
+    animation: wave 2s ease-in-out infinite;
+}
+
+.bounce {
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.flash {
+    animation: flash 2s ease-in-out infinite;
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+.ripple {
+    position: relative;
+}
+
+.ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(0, 212, 255, 0.5);
+    transform: translate(-50%, -50%);
+    animation: ripple 0.6s ease-out;
+}
+
+.gradient-animated {
+    background: linear-gradient(-45deg, #00d4ff, #00ff88, #ffd700, #ff3366);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+.ticker {
+    animation: ticker 30s linear infinite;
+}
+
+.loading-dots::after {
+    content: '...';
+    animation: loadingDots 1.5s infinite;
+}
+
+.bot-active {
+    animation: botPulse 2s infinite;
+}
+
+.emergency-flash {
+    animation: emergencyFlash 0.5s ease-in-out infinite;
+}
+
+.profit-glow {
+    animation: profitGlow 1s ease-in-out;
+}
+
+.loss-shake {
+    animation: lossShake 0.5s ease-in-out;
+}
+
+.connection-pulse {
+    animation: connectionPulse 2s ease-in-out infinite;
+}
+
+.order-fill {
+    animation: orderFill 0.5s ease-out;
+}
+
+.radar-sweep::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 212, 255, 0.5) 50%, 
+        transparent 100%);
+    transform-origin: left center;
+    animation: radarSweep 3s linear infinite;
+}
+
+.price-update {
+    animation: priceUpdate 0.3s ease-out;
+}
+
+/* Notification Animations */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: -400px;
+    max-width: 350px;
+    padding: 15px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 10000;
+    transition: transform 0.3s ease-out;
+}
+
+.notification.show {
+    transform: translateX(-420px);
+}
+
+.notification.success {
+    border-left: 4px solid var(--success);
+}
+
+.notification.error {
+    border-left: 4px solid var(--danger);
+}
+
+.notification.warning {
+    border-left: 4px solid var(--warning);
+}
+
+.notification.info {
+    border-left: 4px solid var(--info);
+}
+
+/* Loading Spinner */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--bg-secondary);
+    border-top-color: var(--primary-blue);
+    border-radius: 50%;
+    animation: rotate 1s linear infinite;
+}
+
+.spinner-small {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+}
+
+.spinner-large {
+    width: 60px;
+    height: 60px;
+    border-width: 4px;
+}
+
+/* Skeleton Loading */
+.skeleton {
+    background: linear-gradient(90deg, 
+        var(--bg-secondary) 25%, 
+        var(--bg-hover) 50%, 
+        var(--bg-secondary) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* Trading Action Animations */
+.buy-animation {
+    animation: orderFill 0.5s ease-out;
+    background-color: rgba(0, 255, 136, 0.1) !important;
+}
+
+.sell-animation {
+    animation: orderFill 0.5s ease-out;
+    background-color: rgba(255, 51, 102, 0.1) !important;
+}
+
+/* Chart Candlestick Animations */
+.candle-rise {
+    animation: slideInUp 0.3s ease-out;
+}
+
+.candle-fall {
+    animation: slideInDown 0.3s ease-out;
+}
+
+/* Position Entry/Exit */
+.position-enter {
+    animation: slideInRight 0.5s ease-out;
+}
+
+.position-exit {
+    animation: slideOutLeft 0.5s ease-out forwards;
+}
+
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+/* Bot Version Switch */
+.bot-version-switch {
+    animation: fadeOut 0.3s ease-out, fadeIn 0.3s ease-out 0.3s;
+}
+
+/* API Connection Status */
+.api-connecting {
+    position: relative;
+}
+
+.api-connecting::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--warning);
+    animation: connectionPulse 1s infinite;
+}
+
+.api-connected::after {
+    background: var(--success);
+    animation: none;
+}
+
+.api-error::after {
+    background: var(--danger);
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Screen Transition */
+.screen-transition-out {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+.screen-transition-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Modal Animations */
+.modal-backdrop {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content-enter {
+    animation: slideInUp 0.3s ease-out;
+}
+
+.modal-content-exit {
+    animation: slideInDown 0.3s ease-out forwards;
+}
+
+/* Social Media Hover Effects */
+.social-hover {
+    transition: all 0.3s ease;
+}
+
+.social-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+}
+
+/* Interactive Button Press */
+.button-press {
+    transition: all 0.1s ease;
+}
+
+.button-press:active {
+    transform: scale(0.95);
+}
+
+/* Hover Glow Effect */
+.hover-glow {
+    transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+/* Floating Animation */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Success Animation Sequence */
+.success-sequence {
+    animation: 
+        flash 0.5s ease-out,
+        bounce 1s ease-out 0.5s,
+        profitGlow 2s ease-out 1.5s;
+}
+
+/* Error Animation Sequence */
+.error-sequence {
+    animation: 
+        shake 0.5s ease-out,
+        emergencyFlash 1s ease-out 0.5s;
+}
+
+/* Smooth Transitions */
+.smooth-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Performance Optimizations */
+.gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

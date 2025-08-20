@@ -1,0 +1,13 @@
+Quick Start Commands:
+
+# Install dependencies (if using build tools)
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Deploy to Cloudflare
+wrangler publish

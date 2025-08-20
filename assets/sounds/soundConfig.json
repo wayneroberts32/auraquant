@@ -1,0 +1,183 @@
+{
+  "sounds": {
+    "alert_up": {
+      "name": "Price Up Alert",
+      "description": "Positive price movement notification",
+      "type": "synthetic",
+      "config": {
+        "waveform": "sine",
+        "frequency": [440, 550, 660],
+        "duration": 0.5,
+        "volume": 0.7,
+        "envelope": {
+          "attack": 0.02,
+          "decay": 0.1,
+          "sustain": 0.3,
+          "release": 0.2
+        },
+        "effects": {
+          "reverb": 0.2,
+          "delay": 0.1
+        }
+      },
+      "fallback": "sounds/alert_up.mp3",
+      "color": "#10B981",
+      "icon": "📈"
+    },
+    "alert_down": {
+      "name": "Price Down Alert",
+      "description": "Negative price movement notification",
+      "type": "synthetic",
+      "config": {
+        "waveform": "triangle",
+        "frequency": [440, 330, 220],
+        "duration": 0.5,
+        "volume": 0.7,
+        "envelope": {
+          "attack": 0.02,
+          "decay": 0.1,
+          "sustain": 0.3,
+          "release": 0.2
+        },
+        "effects": {
+          "reverb": 0.2,
+          "lowpass": 800
+        }
+      },
+      "fallback": "sounds/alert_down.mp3",
+      "color": "#EF4444",
+      "icon": "📉"
+    },
+    "alert_break": {
+      "name": "Breakout Alert",
+      "description": "Price breakout from range",
+      "type": "synthetic",
+      "config": {
+        "waveform": "sawtooth",
+        "frequency": [261.63, 329.63, 392, 523.25],
+        "duration": 0.8,
+        "volume": 0.8,
+        "envelope": {
+          "attack": 0.01,
+          "decay": 0.05,
+          "sustain": 0.4,
+          "release": 0.3
+        },
+        "effects": {
+          "reverb": 0.3,
+          "distortion": 0.1,
+          "delay": 0.15
+        }
+      },
+      "fallback": "sounds/alert_break.mp3",
+      "color": "#8B5CF6",
+      "icon": "🚀"
+    },
+    "alert_hot": {
+      "name": "Hot Stock Alert",
+      "description": "High volume or volatility detected",
+      "type": "synthetic",
+      "config": {
+        "waveform": "square",
+        "frequency": [880, 1760, 880, 1760],
+        "duration": 1.0,
+        "volume": 0.9,
+        "pattern": "pulse",
+        "envelope": {
+          "attack": 0.001,
+          "decay": 0.05,
+          "sustain": 0.2,
+          "release": 0.1
+        },
+        "effects": {
+          "reverb": 0.1,
+          "distortion": 0.2,
+          "chorus": 0.3
+        }
+      },
+      "fallback": "sounds/alert_hot.mp3",
+      "color": "#F97316",
+      "icon": "🔥"
+    },
+    "alert_halt": {
+      "name": "Trading Halt Alert",
+      "description": "Trading halted notification",
+      "type": "synthetic",
+      "config": {
+        "waveform": "sine",
+        "frequency": [440, 0, 440, 0, 440],
+        "duration": 1.5,
+        "volume": 1.0,
+        "pattern": "alarm",
+        "envelope": {
+          "attack": 0.001,
+          "decay": 0.01,
+          "sustain": 0.9,
+          "release": 0.01
+        },
+        "effects": {
+          "reverb": 0.4,
+          "echo": 0.3
+        }
+      },
+      "fallback": "sounds/alert_halt.mp3",
+      "color": "#DC2626",
+      "icon": "⛔"
+    },
+    "alert_warning": {
+      "name": "Warning Alert",
+      "description": "General warning or caution",
+      "type": "synthetic",
+      "config": {
+        "waveform": "triangle",
+        "frequency": [587.33, 493.88, 587.33],
+        "duration": 0.6,
+        "volume": 0.8,
+        "pattern": "warning",
+        "envelope": {
+          "attack": 0.02,
+          "decay": 0.08,
+          "sustain": 0.5,
+          "release": 0.15
+        },
+        "effects": {
+          "reverb": 0.25,
+          "vibrato": 0.1
+        }
+      },
+      "fallback": "sounds/alert_warning.mp3",
+      "color": "#FBBF24",
+      "icon": "⚠️"
+    }
+  },
+  "presets": {
+    "gentle": {
+      "volumeMultiplier": 0.5,
+      "durationMultiplier": 1.2,
+      "effects": {
+        "reverb": 0.3,
+        "lowpass": 2000
+      }
+    },
+    "aggressive": {
+      "volumeMultiplier": 1.2,
+      "durationMultiplier": 0.8,
+      "effects": {
+        "distortion": 0.2,
+        "chorus": 0.1
+      }
+    },
+    "minimal": {
+      "volumeMultiplier": 0.3,
+      "durationMultiplier": 0.5,
+      "effects": {
+        "reverb": 0.1
+      }
+    }
+  },
+  "categories": {
+    "price": ["alert_up", "alert_down", "alert_break"],
+    "market": ["alert_hot", "alert_halt"],
+    "system": ["alert_warning"]
+  }
+}

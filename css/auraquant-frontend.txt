@@ -1,0 +1,33 @@
+auraquant-frontend/
+├── index.html - Done
+├── css/
+│   ├── premium.css
+│   ├── styles.css - Done
+│   ├── animations.css - Done
+│   ├── dashboard.css - Done
+│   ├── charts.css
+│   └── components.css - Done
+├── js/
+│   ├── config.js
+│   ├── main.js
+│   ├── websocket.js
+│   ├── charts.js
+│   ├── trading.js
+│   ├── screener.js
+│   ├── ai.js - Done
+│   ├── social.js
+│   ├── backtest.js
+│   ├── timezone.js
+│   ├── fx-calculator.js ✅
+│   ├── pinescript.js
+│   ├── emergency.js ✅
+│   ├── audio-alerts.js - Done
+│   ├── news.js
+│   ├── calendar.js
+│   ├── webhooks.js
+│   ├── honeypot.js
+│   └── backup.js
+└── assets/
+    ├── sounds/
+    ├── icons/
+    └── images/

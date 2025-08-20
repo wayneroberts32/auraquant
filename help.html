@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraQuant Help Center - Complete Bot Trading Guide</title>
+    <link rel="stylesheet" href="css/help.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="help-center">
+        <!-- Header -->
+        <header class="help-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="assets/logo.svg" alt="AuraQuant" class="help-logo">
+                    <h1>AuraQuant Help Center</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-close" onclick="window.close()">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="help-search">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="helpSearch" placeholder="Search for help topics, tutorials, or features...">
+                <button id="searchBtn">Search</button>
+            </div>
+            <div class="quick-links">
+                <a href="#getting-started">Getting Started</a>
+                <a href="#bot-control">Bot Control</a>
+                <a href="#trading">Trading</a>
+                <a href="#api-setup">API Setup</a>
+                <a href="#risk-management">Risk Management</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="help-content">
+            <!-- Sidebar Navigation -->
+            <aside class="help-sidebar">
+                <nav class="help-nav">
+                    <div class="nav-section">
+                        <h3><i class="fas fa-rocket"></i> Getting Started</h3>
+                        <ul>
+                            <li><a href="#first-login">First Login</a></li>
+                            <li><a href="#account-setup">Account Setup</a></li>
+                            <li><a href="#broker-connection">Connecting Brokers</a></li>
+                            <li><a href="#api-configuration">API Configuration</a></li>
+                            <li><a href="#verification">Account Verification</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3><i class="fas fa-robot"></i> Bot Control Guide</h3>
+                        <ul>
+                            <li><a href="#bot-versions">Bot Versions (V1-V30)</a></li>
+                            <li><a href="#growth-modes">Growth Modes Explained</a></li>
+                            <li><a href="#bot-start">Starting the Bot</a></li>
+                            <li><a href="#bot-monitoring">Monitoring Performance</a></li>
+                            <li><a href="#manual-override">Manual Override</a></li>
+                            <li><a href="#emergency-stop">Emergency Stop</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3><i class="fas fa-chart-line"></i> Trading Features</h3>
+                        <ul>
+                            <li><a href="#paper-trading">Paper Trading Mode</a></li>
+                            <li><a href="#live-trading">Live Trading Setup</a></li>
+                            <li><a href="#order-types">Order Types</a></li>
+                            <li><a href="#position-management">Position Management</a></li>
+                            <li><a href="#screener-usage">Using the Screener</a></li>
+                            <li><a href="#technical-indicators">Technical Indicators</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3><i class="fas fa-shield-alt"></i> Risk Management</h3>
+                        <ul>
+                            <li><a href="#drawdown-limits">2% Drawdown Rule</a></li>
+                            <li><a href="#position-sizing">Position Sizing</a></li>
+                            <li><a href="#stop-loss">Stop Loss Settings</a></li>
+                            <li><a href="#risk-alerts">Risk Alerts</a></li>
+                            <li><a href="#compliance">Compliance Rules</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3><i class="fas fa-cog"></i> Advanced Settings</h3>
+                        <ul>
+                            <li><a href="#ai-integration">AI Integration</a></li>
+                            <li><a href="#webhook-setup">Webhook Configuration</a></li>
+                            <li><a href="#social-alerts">Social Media Alerts</a></li>
+                            <li><a href="#api-vault">API Vault Setup</a></li>
+                            <li><a href="#discord-bot">Discord Bot Setup</a></li>
+                            <li><a href="#backup-restore">Backup & Restore</a></li>
+                            <li><a href="#api-limits">API Rate Limits</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Main Help Content -->
+            <main class="help-main">
+                <!-- Welcome Section -->
+                <section id="welcome" class="help-section">
+                    <h2>Welcome to AuraQuant Infinity Trading Bot</h2>
+                    <div class="welcome-content">
+                        <p class="intro">AuraQuant is a professional-grade automated trading platform designed to turn $500 AUD into millions through intelligent, risk-managed trading strategies.</p>
+                        
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <i class="fas fa-robot"></i>
+                                <h4>Infinity Bot Modes</h4>
+                                <p>V1: Conservative<br>V2: Balanced<br>V3: Aggressive<br>V4: AI-Driven<br>V5: Quantum<br>V∞: Zero-Loss Infinity</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-infinity"></i>
+                                <h4>Infinity Modes</h4>
+                                <p>Millionaire Mode<br>Billionaire Mode<br>Quantum Growth<br>Infinity Growth</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-shield-alt"></i>
+                                <h4>Risk Protection</h4>
+                                <p>Max 2% Drawdown<br>Emergency Stop<br>Auto Position Closing<br>Never Lose Money</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-chart-line"></i>
+                                <h4>Multi-Market</h4>
+                                <p>Stocks (ASX, NYSE, NASDAQ)<br>Crypto (All Major + Meme)<br>Forex (All Pairs)<br>Options & Futures</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Getting Started -->
+                <section id="getting-started" class="help-section">
+                    <h2>Getting Started</h2>
+                    
+                    <div id="first-login" class="subsection">
+                        <h3>First Login</h3>
+                        <ol class="step-list">
+                            <li>Navigate to the AuraQuant platform URL</li>
+                            <li>Click "Create Account" on the login screen</li>
+                            <li>Enter your email and create a strong password</li>
+                            <li>Verify your email address</li>
+                            <li>Complete 2FA setup for security</li>
+                            <li>Log in with your credentials</li>
+                        </ol>
+                    </div>
+
+                    <div id="account-setup" class="subsection">
+                        <h3>Account Setup</h3>
+                        <div class="setup-steps">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <h4>Personal Information</h4>
+                                <p>Complete your profile with accurate information for compliance</p>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <h4>Timezone Settings</h4>
+                                <p>Set to AWST (Perth) or your local timezone</p>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <h4>Notification Preferences</h4>
+                                <p>Configure email, Discord, Telegram alerts</p>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                <h4>Risk Tolerance</h4>
+                                <p>Set your maximum drawdown and position limits</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="broker-connection" class="subsection">
+                        <h3>Connecting Brokers</h3>
+                        <div class="broker-guide">
+                            <h4>Supported Brokers:</h4>
+                            <ul class="broker-list">
+                                <li><strong>Alpaca:</strong> US Stocks & Crypto - API Key + Secret required</li>
+                                <li><strong>Binance:</strong> Cryptocurrency - API Key + Secret required</li>
+                                <li><strong>Interactive Brokers:</strong> Global Markets - TWS API setup</li>
+                                <li><strong>NAB Bank:</strong> Australian Markets - OAuth connection</li>
+                                <li><strong>Plus500:</strong> CFDs - Browser automation (no API)</li>
+                            </ul>
+                            
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <p>Each broker requires specific API credentials. Never share these with anyone.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="api-configuration" class="subsection">
+                        <h3>API Configuration</h3>
+                        <div class="api-steps">
+                            <h4>Step-by-Step API Setup:</h4>
+                            <ol>
+                                <li>
+                                    <strong>Navigate to API Settings</strong>
+                                    <p>Click the settings icon → API Keys</p>
+                                </li>
+                                <li>
+                                    <strong>Select Broker</strong>
+                                    <p>Choose from dropdown (Alpaca, Binance, etc.)</p>
+                                </li>
+                                <li>
+                                    <strong>Enter Credentials</strong>
+                                    <p>Paste API Key and Secret from broker</p>
+                                </li>
+                                <li>
+                                    <strong>Test Connection</strong>
+                                    <p>Click "Test" to verify connectivity</p>
+                                </li>
+                                <li>
+                                    <strong>Save Configuration</strong>
+                                    <p>Credentials are encrypted and stored securely</p>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bot Control Guide -->
+                <section id="bot-control" class="help-section">
+                    <h2>Bot Control Guide</h2>
+                    
+                    <div id="bot-versions" class="subsection">
+                        <h3>Understanding Bot Versions</h3>
+                        <div class="bot-versions-grid">
+                            <div class="version-group">
+                                <h4>V1-V5: Low Growth (Safe)</h4>
+                                <ul>
+                                    <li>5-10% monthly returns</li>
+                                    <li>Minimal risk exposure</li>
+                                    <li>Perfect for beginners</li>
+                                    <li>Max 0.5% per trade risk</li>
+                                </ul>
+                            </div>
+                            <div class="version-group">
+                                <h4>V6-V12: Medium Growth</h4>
+                                <ul>
+                                    <li>10-20% monthly returns</li>
+                                    <li>Balanced risk/reward</li>
+                                    <li>Momentum strategies</li>
+                                    <li>Max 1% per trade risk</li>
+                                </ul>
+                            </div>
+                            <div class="version-group">
+                                <h4>V13-V20: Fast Growth</h4>
+                                <ul>
+                                    <li>20-50% monthly returns</li>
+                                    <li>Aggressive strategies</li>
+                                    <li>Multiple positions</li>
+                                    <li>Max 1.25% per trade risk</li>
+                                </ul>
+                            </div>
+                            <div class="version-group">
+                                <h4>V21-V30: Super Growth</h4>
+                                <ul>
+                                    <li>50%+ monthly returns</li>
+                                    <li>Maximum aggression</li>
+                                    <li>Compound gains rapidly</li>
+                                    <li>Still max 1.25% risk</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="growth-modes" class="subsection">
+                        <h3>Special Growth Modes</h3>
+                        <div class="growth-modes">
+                            <div class="mode-card millionaire">
+                                <h4>💰 Millionaire Mode</h4>
+                                <p>Target: $1M by end of year</p>
+                                <ul>
+                                    <li>20x first week strategy</li>
+                                    <li>Compound aggressively</li>
+                                    <li>High-frequency trading</li>
+                                </ul>
+                            </div>
+                            <div class="mode-card billionaire">
+                                <h4>💎 Billionaire Mode</h4>
+                                <p>Target: $1B by 2026</p>
+                                <ul>
+                                    <li>Quantum calculations</li>
+                                    <li>Multi-market arbitrage</li>
+                                    <li>AI-powered decisions</li>
+                                </ul>
+                            </div>
+                            <div class="mode-card quantum">
+                                <h4>⚛️ Quantum Mode</h4>
+                                <p>Target: $1T by 2027</p>
+                                <ul>
+                                    <li>Predictive algorithms</li>
+                                    <li>News sentiment analysis</li>
+                                    <li>Pattern recognition</li>
+                                </ul>
+                            </div>
+                            <div class="mode-card infinity">
+                                <h4>♾️ Infinity Mode</h4>
+                                <p>Target: Unlimited</p>
+                                <ul>
+                                    <li>Self-learning AI</li>
+                                    <li>Perfect execution</li>
+                                    <li>Zero loss tolerance</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="bot-start" class="subsection">
+                        <h3>Starting the Bot</h3>
+                        <div class="start-procedure">
+                            <div class="warning-box">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <h4>Pre-Start Checklist</h4>
+                                <ul>
+                                    <li>✓ Broker APIs connected and tested</li>
+                                    <li>✓ Sufficient account balance ($500 AUD minimum)</li>
+                                    <li>✓ Risk parameters configured</li>
+                                    <li>✓ Paper trading tested first</li>
+                                    <li>✓ Emergency contacts set up</li>
+                                </ul>
+                            </div>
+                            
+                            <h4>Start Procedure:</h4>
+                            <ol class="procedure-list">
+                                <li>
+                                    <strong>Select Bot Version</strong>
+                                    <p>Choose V1-V5 for safety, higher for aggressive growth</p>
+                                </li>
+                                <li>
+                                    <strong>Choose Trading Mode</strong>
+                                    <p>Paper Trading (recommended first) or Live Trading</p>
+                                </li>
+                                <li>
+                                    <strong>Set Capital Allocation</strong>
+                                    <p>Specify amount bot can trade with</p>
+                                </li>
+                                <li>
+                                    <strong>Configure Markets</strong>
+                                    <p>Select stocks, crypto, forex, or all</p>
+                                </li>
+                                <li>
+                                    <strong>Review Settings</strong>
+                                    <p>Double-check all parameters</p>
+                                </li>
+                                <li>
+                                    <strong>Click "Start Bot"</strong>
+                                    <p>Bot will begin with safety checks</p>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div id="manual-override" class="subsection">
+                        <h3>Manual Override Controls</h3>
+                        <div class="override-controls">
+                            <h4>When to Use Manual Override:</h4>
+                            <ul>
+                                <li>Unexpected market events</li>
+                                <li>Testing new strategies</li>
+                                <li>Adjusting positions</li>
+                                <li>Emergency situations</li>
+                            </ul>
+                            
+                            <h4>Override Options:</h4>
+                            <div class="control-grid">
+                                <div class="control-item">
+                                    <button class="btn-pause">⏸️ Pause Bot</button>
+                                    <p>Temporarily halt all trading</p>
+                                </div>
+                                <div class="control-item">
+                                    <button class="btn-resume">▶️ Resume Bot</button>
+                                    <p>Continue automated trading</p>
+                                </div>
+                                <div class="control-item">
+                                    <button class="btn-close-all">🛑 Close All</button>
+                                    <p>Exit all positions immediately</p>
+                                </div>
+                                <div class="control-item">
+                                    <button class="btn-emergency">🚨 Emergency Stop</button>
+                                    <p>Instant halt + close positions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Trading Features -->
+                <section id="trading" class="help-section">
+                    <h2>Trading Features</h2>
+                    
+                    <div id="paper-trading" class="subsection">
+                        <h3>Paper Trading Mode</h3>
+                        <div class="paper-trading-info">
+                            <p>Paper trading uses simulated money to test strategies without risk.</p>
+                            
+                            <h4>Benefits:</h4>
+                            <ul>
+                                <li>Test bot versions risk-free</li>
+                                <li>Learn platform features</li>
+                                <li>Validate strategies</li>
+                                <li>Build confidence</li>
+                            </ul>
+                            
+                            <h4>How to Enable:</h4>
+                            <ol>
+                                <li>Toggle "Paper Trading" switch in header</li>
+                                <li>Virtual $10,000 allocated automatically</li>
+                                <li>All features work identically to live</li>
+                                <li>Performance tracked separately</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div id="screener-usage" class="subsection">
+                        <h3>Using the Market Screener</h3>
+                        <div class="screener-guide">
+                            <h4>Warrior Trading Style Screeners:</h4>
+                            <ul class="screener-list">
+                                <li><strong>Gap Scanner:</strong> Pre-market gaps >4%</li>
+                                <li><strong>Momentum Scanner:</strong> High volume + price movement</li>
+                                <li><strong>Low Float Scanner:</strong> <20M shares, high volatility</li>
+                                <li><strong>News Scanner:</strong> Breaking news catalysts</li>
+                                <li><strong>Halt Scanner:</strong> Trading halts and resumes</li>
+                            </ul>
+                            
+                            <h4>Custom Screener Setup:</h4>
+                            <ol>
+                                <li>Go to Screener tab</li>
+                                <li>Select filters (price, volume, market cap)</li>
+                                <li>Add technical indicators</li>
+                                <li>Save as custom screener</li>
+                                <li>Set alerts for matches</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Risk Management -->
+                <section id="risk-management" class="help-section">
+                    <h2>Risk Management</h2>
+                    
+                    <div id="drawdown-limits" class="subsection">
+                        <h3>Understanding the 2% Drawdown Rule</h3>
+                        <div class="drawdown-explanation">
+                            <div class="rule-box">
+                                <h4>Core Rule: Maximum 2% Portfolio Drawdown</h4>
+                                <p>The bot will NEVER allow your account to lose more than 2% from its peak value.</p>
+                            </div>
+                            
+                            <h4>How It Works:</h4>
+                            <ul>
+                                <li><strong>Per Trade:</strong> Maximum 1.25% risk per position</li>
+                                <li><strong>Portfolio Level:</strong> Maximum 2% total drawdown</li>
+                                <li><strong>Automatic Protection:</strong> Bot closes positions if approaching limit</li>
+                                <li><strong>Emergency Stop:</strong> All trading halts at 1.8% drawdown</li>
+                            </ul>
+                            
+                            <h4>Example:</h4>
+                            <div class="example-box">
+                                <p>Account Value: $10,000</p>
+                                <p>Max Loss per Trade: $125 (1.25%)</p>
+                                <p>Max Total Loss: $200 (2%)</p>
+                                <p>Emergency Stop at: $180 loss (1.8%)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="compliance" class="subsection">
+                        <h3>Global Compliance Rules</h3>
+                        <div class="compliance-info">
+                            <h4>Automatic Compliance Enforcement:</h4>
+                            <ul>
+                                <li><strong>US PDT Rule:</strong> $25k minimum for day trading</li>
+                                <li><strong>Australian ASIC:</strong> Leverage limits on CFDs</li>
+                                <li><strong>EU MiFID II:</strong> Risk warnings and limits</li>
+                                <li><strong>Crypto Regulations:</strong> KYC/AML compliance</li>
+                            </ul>
+                            
+                            <div class="alert alert-warning">
+                                <i class="fas fa-balance-scale"></i>
+                                <p>Bot automatically detects your jurisdiction and applies strictest applicable rules.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Advanced Features -->
+                <section id="advanced" class="help-section">
+                    <h2>Advanced Features</h2>
+                    
+                    <div id="ai-integration" class="subsection">
+                        <h3>AI Integration</h3>
+                        <div class="ai-features">
+                            <h4>Connected AI Models:</h4>
+                            <div class="ai-grid">
+                                <div class="ai-model">
+                                    <h5>ChatGPT-4</h5>
+                                    <p>Market analysis and strategy generation</p>
+                                </div>
+                                <div class="ai-model">
+                                    <h5>Claude 3</h5>
+                                    <p>Risk assessment and compliance</p>
+                                </div>
+                                <div class="ai-model">
+                                    <h5>DeepSeek</h5>
+                                    <p>Code generation for strategies</p>
+                                </div>
+                                <div class="ai-model">
+                                    <h5>Warp AI</h5>
+                                    <p>Terminal automation</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="webhook-setup" class="subsection">
+                        <h3>Webhook Configuration</h3>
+                        <div class="webhook-info">
+                            <h4>Webhook Endpoints:</h4>
+                            <ul>
+                                <li><code>/webhook/tradingview</code> - TradingView alerts</li>
+                                <li><code>/webhook/broker</code> - Broker fills</li>
+                                <li><code>/webhook/news</code> - News alerts</li>
+                                <li><code>/webhook/social</code> - Social signals</li>
+                            </ul>
+                            
+                            <h4>Setup Steps:</h4>
+                            <ol>
+                                <li>Generate webhook URL in settings</li>
+                                <li>Add to TradingView alert</li>
+                                <li>Configure JSON payload</li>
+                                <li>Test with sample data</li>
+                                <li>Monitor webhook logs</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div id="backup-restore" class="subsection">
+                        <h3>Backup & Restore</h3>
+                        <div class="backup-info">
+                            <h4>Automatic Backups:</h4>
+                            <ul>
+                                <li>Hourly snapshots of settings</li>
+                                <li>Daily full backups to OneDrive</li>
+                                <li>Pre-upgrade safety backups</li>
+                                <li>Emergency state preservation</li>
+                            </ul>
+                            
+                            <h4>Manual Backup:</h4>
+                            <ol>
+                                <li>Go to Settings → Backup</li>
+                                <li>Click "Create Backup"</li>
+                                <li>Choose local or cloud storage</li>
+                                <li>Download backup file</li>
+                            </ol>
+                            
+                            <h4>Restore Procedure:</h4>
+                            <ol>
+                                <li>Settings → Backup → Restore</li>
+                                <li>Select backup file</li>
+                                <li>Review changes preview</li>
+                                <li>Confirm restoration</li>
+                                <li>System will restart</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Troubleshooting -->
+                <section id="troubleshooting" class="help-section">
+                    <h2>Troubleshooting</h2>
+                    
+                    <div class="troubleshooting-grid">
+                        <div class="issue">
+                            <h4>Bot Not Starting</h4>
+                            <ul>
+                                <li>Check broker API connection</li>
+                                <li>Verify account balance</li>
+                                <li>Review error logs</li>
+                                <li>Test in paper mode first</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="issue">
+                            <h4>No Trades Executing</h4>
+                            <ul>
+                                <li>Check market hours</li>
+                                <li>Verify screener settings</li>
+                                <li>Review risk parameters</li>
+                                <li>Check for compliance blocks</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="issue">
+                            <h4>Connection Issues</h4>
+                            <ul>
+                                <li>Test internet connection</li>
+                                <li>Verify API credentials</li>
+                                <li>Check firewall settings</li>
+                                <li>Review rate limits</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="issue">
+                            <h4>Emergency Stop Triggered</h4>
+                            <ul>
+                                <li>Review drawdown levels</li>
+                                <li>Check position sizes</li>
+                                <li>Analyze market conditions</li>
+                                <li>Adjust risk settings</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contact Support -->
+                <section id="support" class="help-section">
+                    <h2>Contact Support</h2>
+                    <div class="support-options">
+                        <div class="support-card">
+                            <i class="fab fa-discord"></i>
+                            <h4>Discord</h4>
+                            <p>Join our Discord server for community support</p>
+                            <a href="#" class="btn-support">Join Discord</a>
+                        </div>
+                        <div class="support-card">
+                            <i class="fab fa-telegram"></i>
+                            <h4>Telegram</h4>
+                            <p>Get instant support via Telegram</p>
+                            <a href="#" class="btn-support">Open Telegram</a>
+                        </div>
+                        <div class="support-card">
+                            <i class="fas fa-envelope"></i>
+                            <h4>Email</h4>
+                            <p>Send detailed queries via email</p>
+                            <a href="mailto:support@auraquant.com" class="btn-support">Send Email</a>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Interactive Tutorial Overlay -->
+        <div id="tutorial-overlay" class="tutorial-overlay hidden">
+            <div class="tutorial-content">
+                <h3 id="tutorial-title">Interactive Tutorial</h3>
+                <p id="tutorial-text">Follow these steps to get started...</p>
+                <div class="tutorial-actions">
+                    <button id="tutorial-prev" class="btn-secondary">Previous</button>
+                    <button id="tutorial-next" class="btn-primary">Next</button>
+                    <button id="tutorial-skip" class="btn-text">Skip Tutorial</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/help.js"></script>
+</body>
+</html>

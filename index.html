@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraQuant Infinity - Professional Trading Platform</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/premium.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/charts.css">
+    <link rel="stylesheet" href="css/components.css">
+    
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tradingview-charting-library@latest/charting_library/charting_library.min.js"></script>
+    
+    <!-- Core Configuration -->
+    <script src="js/config.js"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    
+    <!-- Preload Critical Scripts -->
+    <link rel="preload" href="js/integration.js" as="script">
+    <link rel="preload" href="js/nab-integration.js" as="script">
+    <link rel="preload" href="js/plus500-integration.js" as="script">
+</head>
+<body class="dark-theme">
+    
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <!-- Animated Logo -->
+            <div class="logo-container">
+                <div class="animated-logo">
+                    <div class="infinity-symbol glowing">
+                        <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M50,50 C50,20 80,20 100,50 C120,80 150,80 150,50 C150,20 120,20 100,50 C80,80 50,80 50,50 Z" 
+                                  fill="none" stroke="url(#gradient)" stroke-width="3"/>
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#ff00ff;stop-opacity:1">
+                                        <animate attributeName="stop-color" values="#ff00ff;#00ffff;#ff00ff" dur="3s" repeatCount="indefinite"/>
+                                    </stop>
+                                    <stop offset="100%" style="stop-color:#00ffff;stop-opacity:1">
+                                        <animate attributeName="stop-color" values="#00ffff;#ff00ff;#00ffff" dur="3s" repeatCount="indefinite"/>
+                                    </stop>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h1 class="platform-title">AuraQuant<span class="infinity-text">∞</span></h1>
+                    <p class="tagline">Infinite Trading Intelligence</p>
+                </div>
+            </div>
+            
+            <!-- Login Tabs -->
+            <div class="login-tabs">
+                <button class="tab-btn active" data-tab="platform">Platform</button>
+                <button class="tab-btn" data-tab="bank">Bank</button>
+                <button class="tab-btn" data-tab="broker">Broker</button>
+            </div>
+            
+            <!-- Login Forms -->
+            <div class="login-forms">
+                <!-- Platform Login -->
+                <form id="platformLogin" class="login-form active">
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder="Email" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password" placeholder="Password" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-glow">
+                        <span>Login to Platform</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+                
+                <!-- Bank Login -->
+                <form id="bankLogin" class="login-form">
+                    <select class="bank-selector">
+                        <option value="nab">NAB - National Australia Bank</option>
+                        <option value="cba">Commonwealth Bank</option>
+                        <option value="anz">ANZ Bank</option>
+                        <option value="westpac">Westpac</option>
+                    </select>
+                    <div class="form-group">
+                        <input type="text" placeholder="Client Number" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="Password" required>
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Connect Bank</button>
+                </form>
+                
+                <!-- Broker Login -->
+                <form id="brokerLogin" class="login-form">
+                    <select class="broker-selector">
+                        <option value="alpaca">Alpaca Markets</option>
+                        <option value="binance">Binance</option>
+                        <option value="ib">Interactive Brokers</option>
+                        <option value="td">TD Ameritrade</option>
+                        <option value="coinbase">Coinbase</option>
+                        <option value="plus500">Plus500</option>
+                    </select>
+                    <div class="form-group">
+                        <input type="text" placeholder="API Key" required>
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="API Secret" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Connect Broker</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Platform -->
+    <div id="mainPlatform" class="main-platform" style="display: none;">
+        
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="logo-small">
+                <span class="logo-text">AuraQuant<span class="infinity">∞</span></span>
+            </div>
+            
+            <div class="account-info">
+                <div class="balance-display">
+                    <span class="label">Balance:</span>
+                    <span class="value" id="accountBalance">$100,000.00</span>
+                </div>
+                <div class="pnl-display">
+                    <span class="label">P&L:</span>
+                    <span class="value positive" id="dailyPnL">+$2,345.67</span>
+                </div>
+            </div>
+            
+            <div class="bot-status">
+                <div class="bot-version">
+                    <select id="botVersionSelector">
+                        <option value="V1">Bot V1</option>
+                        <option value="V2">Bot V2</option>
+                        <option value="V3">Bot V3</option>
+                        <option value="V4" selected>Bot V4</option>
+                        <option value="V5">Bot V5</option>
+                        <option value="V6">Bot V6</option>
+                        <option value="V7">Bot V7</option>
+                        <option value="V8">Bot V8</option>
+                        <option value="V9">Bot V9</option>
+                    <option value="V10">Bot V10</option>
+                    <option value="V∞">Bot V∞ (Infinity)</option>
+                    </select>
+                </div>
+                <div class="trading-mode">
+                    <button class="mode-toggle" id="tradingModeToggle">
+                        <span class="paper-mode active">Paper</span>
+                        <span class="live-mode">Live</span>
+                    </button>
+                </div>
+                <div class="bot-controls">
+                    <button class="btn-icon" id="pauseBot" title="Pause Bot">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button class="btn-icon" id="resumeBot" title="Resume Bot" style="display: none;">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="btn-icon danger" id="stopBot" title="Emergency Stop">
+                        <i class="fas fa-stop"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="time-display">
+                <div class="awst-time" id="awstTime">
+                    <i class="fas fa-clock"></i>
+                    <span>00:00:00 AWST</span>
+                </div>
+                <div class="market-time" id="marketTime">
+                    <span>NY: 00:00</span>
+                </div>
+            </div>
+            
+            <div class="connected-brokers">
+                <span class="broker-badge alpaca">Alpaca</span>
+                <span class="broker-badge binance">Binance</span>
+                <span class="broker-badge nab">NAB</span>
+            </div>
+            
+            <div class="user-menu">
+                <button class="btn-icon" id="notificationsBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <button class="btn-icon" id="settingsBtn">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn-icon" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Navigation Tabs -->
+        <nav class="main-nav">
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-screen="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-tab" data-screen="trading">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Trading</span>
+                </button>
+                <button class="nav-tab" data-screen="screener">
+                    <i class="fas fa-filter"></i>
+                    <span>Screener</span>
+                </button>
+                <button class="nav-tab" data-screen="backtest">
+                    <i class="fas fa-history"></i>
+                    <span>Backtest</span>
+                </button>
+                <button class="nav-tab" data-screen="bot-control">
+                    <i class="fas fa-robot"></i>
+                    <span>Bot Control</span>
+                </button>
+                <button class="nav-tab" data-screen="ai-center">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Center</span>
+                </button>
+                <button class="nav-tab" data-screen="social">
+                    <i class="fas fa-users"></i>
+                    <span>Social Hub</span>
+                </button>
+                <button class="nav-tab" data-screen="news">
+                    <i class="fas fa-newspaper"></i>
+                    <span>News</span>
+                </button>
+                <button class="nav-tab" data-screen="calendar">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendar</span>
+                </button>
+                <button class="nav-tab" data-screen="portfolio">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Portfolio</span>
+                </button>
+                <button class="nav-tab" data-screen="alerts">
+                    <i class="fas fa-bell"></i>
+                    <span>Alerts</span>
+                </button>
+                <button class="nav-tab" data-screen="fx-calculator">
+                    <i class="fas fa-calculator"></i>
+                    <span>FX Calc</span>
+                </button>
+                <button class="nav-tab" data-screen="pine-editor">
+                    <i class="fas fa-code"></i>
+                    <span>Pine Script</span>
+                </button>
+                <button class="nav-tab" data-screen="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+                <button class="nav-tab" data-screen="api-vault">
+                    <i class="fas fa-vault"></i>
+                    <span>API Vault</span>
+                </button>
+                <button class="nav-tab" data-screen="discord-bot">
+                    <i class="fab fa-discord"></i>
+                    <span>Discord Bot</span>
+                </button>
+                <button class="nav-tab" data-screen="help">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <main class="content-area">
+            
+            <!-- Dashboard Screen -->
+            <div id="dashboard-screen" class="screen active">
+                <div class="dashboard-grid">
+                    <!-- Portfolio Summary -->
+                    <div class="card portfolio-summary">
+                        <h3>Portfolio Summary</h3>
+                        <div class="stats-grid">
+                            <div class="stat">
+                                <span class="label">Total Value</span>
+                                <span class="value">$250,000</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Today's P&L</span>
+                                <span class="value positive">+$5,234</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Win Rate</span>
+                                <span class="value">78%</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Sharpe Ratio</span>
+                                <span class="value">2.4</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Positions -->
+                    <div class="card active-positions">
+                        <h3>Active Positions</h3>
+                        <div class="positions-list" id="activePositions">
+                            <!-- Positions will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Market Overview -->
+                    <div class="card market-overview">
+                        <h3>Market Overview</h3>
+                        <div class="market-indices" id="marketIndices">
+                            <!-- Market data will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Bot Performance -->
+                    <div class="card bot-performance">
+                        <h3>Bot Performance</h3>
+                        <canvas id="botPerformanceChart"></canvas>
+                    </div>
+                    
+                    <!-- Recent Trades -->
+                    <div class="card recent-trades">
+                        <h3>Recent Trades</h3>
+                        <div class="trades-list" id="recentTrades">
+                            <!-- Trades will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Top Movers -->
+                    <div class="card top-movers">
+                        <h3>Top Movers</h3>
+                        <div class="movers-list" id="topMovers">
+                            <!-- Movers will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trading Screen -->
+            <div id="trading-screen" class="screen">
+                <div class="trading-layout">
+                    <!-- Symbol Search -->
+                    <div class="symbol-search">
+                        <input type="text" id="symbolSearch" placeholder="Search symbols...">
+                        <div class="search-results" id="searchResults"></div>
+                    </div>
+                    
+                    <!-- Watchlist -->
+                    <div class="watchlist-panel">
+                        <h3>Watchlist</h3>
+                        <div class="watchlist" id="watchlist">
+                            <!-- Watchlist items -->
+                        </div>
+                    </div>
+                    
+                    <!-- Chart Container -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <span class="symbol-name" id="chartSymbol">AAPL</span>
+                            <div class="timeframe-selector">
+                                <button class="tf-btn" data-tf="1m">1m</button>
+                                <button class="tf-btn" data-tf="5m">5m</button>
+                                <button class="tf-btn" data-tf="15m">15m</button>
+                                <button class="tf-btn" data-tf="1h">1h</button>
+                                <button class="tf-btn active" data-tf="1d">1D</button>
+                                <button class="tf-btn" data-tf="1w">1W</button>
+                            </div>
+                            <div class="chart-tools">
+                                <button class="tool-btn" title="Indicators">
+                                    <i class="fas fa-chart-line"></i>
+                                </button>
+                                <button class="tool-btn" title="Drawing Tools">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                                <button class="tool-btn" title="Settings">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="tradingChart" class="main-chart"></div>
+                    </div>
+                    
+                    <!-- Order Panel -->
+                    <div class="order-panel">
+                        <h3>Place Order</h3>
+                        <div class="order-type-tabs">
+                            <button class="order-tab active" data-type="market">Market</button>
+                            <button class="order-tab" data-type="limit">Limit</button>
+                            <button class="order-tab" data-type="stop">Stop</button>
+                        </div>
+                        <form id="orderForm">
+                            <div class="form-group">
+                                <label>Symbol</label>
+                                <input type="text" id="orderSymbol" value="AAPL">
+                            </div>
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" id="orderQuantity" value="100">
+                            </div>
+                            <div class="form-group" id="limitPriceGroup" style="display: none;">
+                                <label>Limit Price</label>
+                                <input type="number" id="limitPrice" step="0.01">
+                            </div>
+                            <div class="form-group" id="stopPriceGroup" style="display: none;">
+                                <label>Stop Price</label>
+                                <input type="number" id="stopPrice" step="0.01">
+                            </div>
+                            <div class="button-group">
+                                <button type="button" class="btn btn-buy" id="buyBtn">
+                                    <i class="fas fa-arrow-up"></i> Buy
+                                </button>
+                                <button type="button" class="btn btn-sell" id="sellBtn">
+                                    <i class="fas fa-arrow-down"></i> Sell
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- Open Orders -->
+                        <div class="open-orders">
+                            <h4>Open Orders</h4>
+                            <div id="openOrdersList"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Market Depth -->
+                    <div class="market-depth">
+                        <h3>Market Depth</h3>
+                        <div class="depth-table">
+                            <div class="bids" id="bidsList"></div>
+                            <div class="spread" id="spreadDisplay">0.01</div>
+                            <div class="asks" id="asksList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Screener Screen -->
+            <div id="screener-screen" class="screen">
+                <div class="screener-container">
+                    <div class="screener-sidebar">
+                        <h3>Screener Templates</h3>
+                        <div class="screener-categories">
+                            <div class="category">
+                                <h4>Pre-Market</h4>
+                                <label><input type="checkbox" data-screener="gap-up"> Gap Up Scanner</label>
+                                <label><input type="checkbox" data-screener="gap-down"> Gap Down Scanner</label>
+                                <label><input type="checkbox" data-screener="pre-momentum"> Pre-Market Momentum</label>
+                            </div>
+                            <div class="category">
+                                <h4>Momentum</h4>
+                                <label><input type="checkbox" data-screener="high-momentum"> High Momentum</label>
+                                <label><input type="checkbox" data-screener="volume-surge"> Volume Surge</label>
+                                <label><input type="checkbox" data-screener="breakout"> Breakout Scanner</label>
+                            </div>
+                            <div class="category">
+                                <h4>Technical</h4>
+                                <label><input type="checkbox" data-screener="oversold"> RSI Oversold</label>
+                                <label><input type="checkbox" data-screener="overbought"> RSI Overbought</label>
+                                <label><input type="checkbox" data-screener="ma-cross"> MA Crossover</label>
+                            </div>
+                            <div class="category">
+                                <h4>Crypto</h4>
+                                <label><input type="checkbox" data-screener="crypto-pump"> Crypto Pump</label>
+                                <label><input type="checkbox" data-screener="defi-movers"> DeFi Movers</label>
+                                <label><input type="checkbox" data-screener="new-listings"> New Listings</label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="runScreener">Run Screener</button>
+                    </div>
+                    <div class="screener-results">
+                        <h3>Screener Results</h3>
+                        <div class="results-toolbar">
+                            <button class="btn-icon" id="exportResults">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <button class="btn-icon" id="refreshResults">
+                                <i class="fas fa-sync"></i> Refresh
+                            </button>
+                        </div>
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Price</th>
+                                    <th>Change %</th>
+                                    <th>Volume</th>
+                                    <th>Market Cap</th>
+                                    <th>Score</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="screenerResults">
+                                <!-- Results will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bot Control Screen -->
+            <div id="bot-control-screen" class="screen">
+                <div class="bot-control-grid">
+                    <!-- Bot Status -->
+                    <div class="card bot-status-card">
+                        <h3>Bot Status</h3>
+                        <div class="status-indicator">
+                            <div class="status-light active"></div>
+                            <span>Running</span>
+                        </div>
+                        <div class="bot-stats">
+                            <div class="stat">
+                                <span>Version</span>
+                                <span id="botVersion">V4</span>
+                            </div>
+                            <div class="stat">
+                                <span>Uptime</span>
+                                <span id="botUptime">2d 14h 32m</span>
+                            </div>
+                            <div class="stat">
+                                <span>Trades Today</span>
+                                <span id="botTradesToday">47</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Manual Override -->
+                    <div class="card manual-override">
+                        <h3>Manual Override</h3>
+                        <div class="override-controls">
+                            <button class="btn btn-warning" id="pauseTradingBtn">
+                                <i class="fas fa-pause"></i> Pause Trading
+                            </button>
+                            <button class="btn btn-danger" id="closeAllBtn">
+                                <i class="fas fa-times-circle"></i> Close All Positions
+                            </button>
+                            <button class="btn btn-info" id="reduceRiskBtn">
+                                <i class="fas fa-shield-alt"></i> Reduce Risk
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Strategy Settings -->
+                    <div class="card strategy-settings">
+                        <h3>Strategy Settings</h3>
+                        <form id="strategyForm">
+                            <div class="form-group">
+                                <label>Risk Per Trade (%)</label>
+                                <input type="number" id="riskPerTrade" value="2" min="0.1" max="5" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Max Positions</label>
+                                <input type="number" id="maxPositions" value="10" min="1" max="50">
+                            </div>
+                            <div class="form-group">
+                                <label>Stop Loss (%)</label>
+                                <input type="number" id="stopLoss" value="2" min="0.5" max="10" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Take Profit (%)</label>
+                                <input type="number" id="takeProfit" value="5" min="1" max="20" step="0.1">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Settings</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Bot Logs -->
+                    <div class="card bot-logs">
+                        <h3>Bot Activity Log</h3>
+                        <div class="log-container" id="botLogs">
+                            <!-- Logs will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Command Center -->
+            <div id="ai-center-screen" class="screen">
+                <div class="ai-center-layout">
+                    <!-- AI Models -->
+                    <div class="card ai-models">
+                        <h3>AI Models</h3>
+                        <div class="model-list">
+                            <div class="model-item active">
+                                <i class="fas fa-robot"></i>
+                                <span>ChatGPT-4</span>
+                                <span class="status online">Online</span>
+                            </div>
+                            <div class="model-item active">
+                                <i class="fas fa-brain"></i>
+                                <span>Claude 3</span>
+                                <span class="status online">Online</span>
+                            </div>
+                            <div class="model-item">
+                                <i class="fas fa-microchip"></i>
+                                <span>DeepSeek</span>
+                                <span class="status offline">Offline</span>
+                            </div>
+                            <div class="model-item active">
+                                <i class="fas fa-code"></i>
+                                <span>GitHub Copilot</span>
+                                <span class="status online">Online</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Chat -->
+                    <div class="card ai-chat">
+                        <h3>AI Market Assistant</h3>
+                        <div class="chat-messages" id="aiChatMessages">
+                            <!-- Chat messages will appear here -->
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="aiChatInput" placeholder="Ask AI about markets, strategies, or analysis...">
+                            <button class="btn btn-primary" id="sendAiMessage">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Signals -->
+                    <div class="card ai-signals">
+                        <h3>AI Trading Signals</h3>
+                        <div class="signals-list" id="aiSignals">
+                            <!-- AI signals will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Hub -->
+            <div id="social-screen" class="screen">
+                <div class="social-hub-grid">
+                    <!-- Discord Integration -->
+                    <div class="card discord-panel">
+                        <h3><i class="fab fa-discord"></i> Discord</h3>
+                        <div class="social-feed" id="discordFeed">
+                            <!-- Discord messages -->
+                        </div>
+                    </div>
+                    
+                    <!-- Telegram Integration -->
+                    <div class="card telegram-panel">
+                        <h3><i class="fab fa-telegram"></i> Telegram</h3>
+                        <div class="social-feed" id="telegramFeed">
+                            <!-- Telegram messages -->
+                        </div>
+                    </div>
+                    
+                    <!-- Twitter/X Integration -->
+                    <div class="card twitter-panel">
+                        <h3><i class="fab fa-twitter"></i> X (Twitter)</h3>
+                        <div class="social-feed" id="twitterFeed">
+                            <!-- Twitter feed -->
+                        </div>
+                    </div>
+                    
+                    <!-- Broadcast Message -->
+                    <div class="card broadcast-panel">
+                        <h3>Broadcast Message</h3>
+                        <form id="broadcastForm">
+                            <textarea id="broadcastMessage" placeholder="Type your message..."></textarea>
+                            <div class="broadcast-options">
+                                <label><input type="checkbox" checked> Discord</label>
+                                <label><input type="checkbox" checked> Telegram</label>
+                                <label><input type="checkbox" checked> Twitter</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Broadcast</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- API Vault Screen -->
+            <div id="api-vault-screen" class="screen">
+                <div class="vault-container">
+                    <div class="vault-header">
+                        <h2><i class="fas fa-vault"></i> API Vault - Secure Credential Management</h2>
+                        <button class="btn btn-primary" id="addApiKeyBtn">
+                            <i class="fas fa-plus"></i> Add API Key
+                        </button>
+                    </div>
+                    
+                    <div class="vault-grid">
+                        <!-- Stored API Keys -->
+                        <div class="card stored-keys">
+                            <h3>Stored API Keys</h3>
+                            <div class="keys-list" id="storedKeysList">
+                                <!-- Keys will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Vault Security -->
+                        <div class="card vault-security">
+                            <h3>Vault Security</h3>
+                            <div class="security-status">
+                                <div class="status-item">
+                                    <i class="fas fa-lock"></i>
+                                    <span>Encryption: AES-256</span>
+                                </div>
+                                <div class="status-item">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Master Password: Set</span>
+                                </div>
+                                <div class="status-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Auto-lock: 15 minutes</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-warning" id="changeVaultPassword">
+                                <i class="fas fa-key"></i> Change Master Password
+                            </button>
+                        </div>
+                        
+                        <!-- Quick Test -->
+                        <div class="card api-test">
+                            <h3>Quick API Test</h3>
+                            <select id="apiTestSelector">
+                                <option value="">Select API to test...</option>
+                                <option value="alpaca">Alpaca</option>
+                                <option value="binance">Binance</option>
+                                <option value="discord">Discord</option>
+                                <option value="openai">OpenAI</option>
+                            </select>
+                            <button class="btn btn-info" id="testApiBtn">
+                                <i class="fas fa-plug"></i> Test Connection
+                            </button>
+                            <div class="test-result" id="apiTestResult"></div>
+                        </div>
+                        
+                        <!-- Vault Actions -->
+                        <div class="card vault-actions">
+                            <h3>Vault Actions</h3>
+                            <button class="btn btn-secondary" id="exportVaultBtn">
+                                <i class="fas fa-download"></i> Export Vault
+                            </button>
+                            <button class="btn btn-secondary" id="importVaultBtn">
+                                <i class="fas fa-upload"></i> Import Vault
+                            </button>
+                            <button class="btn btn-info" id="viewAuditLogBtn">
+                                <i class="fas fa-history"></i> View Audit Log
+                            </button>
+                            <button class="btn btn-danger" id="clearVaultBtn">
+                                <i class="fas fa-trash"></i> Clear All Keys
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Discord Bot Screen -->
+            <div id="discord-bot-screen" class="screen">
+                <div class="discord-bot-container">
+                    <div class="discord-header">
+                        <h2><i class="fab fa-discord"></i> Discord Bot Control Center</h2>
+                        <div class="bot-status-badge" id="discordBotStatus">
+                            <span class="status-dot"></span>
+                            <span class="status-text">Checking...</span>
+                        </div>
+                    </div>
+                    
+                    <div class="discord-grid">
+                        <!-- Bot Setup -->
+                        <div class="card bot-setup">
+                            <h3>Bot Setup</h3>
+                            <div class="setup-status" id="discordSetupStatus">
+                                <div class="setup-step completed">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Bot Created</span>
+                                </div>
+                                <div class="setup-step">
+                                    <i class="fas fa-circle"></i>
+                                    <span>Token Configured</span>
+                                </div>
+                                <div class="setup-step">
+                                    <i class="fas fa-circle"></i>
+                                    <span>Server Connected</span>
+                                </div>
+                                <div class="setup-step">
+                                    <i class="fas fa-circle"></i>
+                                    <span>Channels Set</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" id="runDiscordSetup">
+                                <i class="fas fa-magic"></i> Run Setup Wizard
+                            </button>
+                        </div>
+                        
+                        <!-- Bot Commands -->
+                        <div class="card bot-commands">
+                            <h3>Bot Commands</h3>
+                            <div class="commands-list">
+                                <div class="command-item">
+                                    <code>!aq status</code>
+                                    <span>Show bot status</span>
+                                </div>
+                                <div class="command-item">
+                                    <code>!aq start</code>
+                                    <span>Start trading bot</span>
+                                </div>
+                                <div class="command-item">
+                                    <code>!aq stop</code>
+                                    <span>Stop trading bot</span>
+                                </div>
+                                <div class="command-item">
+                                    <code>!aq emergency</code>
+                                    <span>Emergency stop</span>
+                                </div>
+                                <div class="command-item">
+                                    <code>!aq mode V1-V∞</code>
+                                    <span>Change bot mode</span>
+                                </div>
+                                <div class="command-item">
+                                    <code>!aq positions</code>
+                                    <span>Show positions</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Alert Settings -->
+                        <div class="card alert-settings">
+                            <h3>Alert Settings</h3>
+                            <form id="discordAlertSettings">
+                                <label class="toggle-setting">
+                                    <input type="checkbox" checked id="discordTradeAlerts">
+                                    <span>Trade Alerts</span>
+                                </label>
+                                <label class="toggle-setting">
+                                    <input type="checkbox" checked id="discordMarketAlerts">
+                                    <span>Market Alerts</span>
+                                </label>
+                                <label class="toggle-setting">
+                                    <input type="checkbox" checked id="discordRiskAlerts">
+                                    <span>Risk Alerts</span>
+                                </label>
+                                <label class="toggle-setting">
+                                    <input type="checkbox" id="discordPerformanceAlerts">
+                                    <span>Performance Reports</span>
+                                </label>
+                                <label class="toggle-setting">
+                                    <input type="checkbox" checked id="discordEmergencyAlerts">
+                                    <span>Emergency Alerts</span>
+                                </label>
+                            </form>
+                        </div>
+                        
+                        <!-- Channel Configuration -->
+                        <div class="card channel-config">
+                            <h3>Channel Configuration</h3>
+                            <div class="channel-list">
+                                <div class="channel-item">
+                                    <label>Alerts Channel</label>
+                                    <input type="text" id="alertsChannelId" placeholder="Channel ID">
+                                </div>
+                                <div class="channel-item">
+                                    <label>Trades Channel</label>
+                                    <input type="text" id="tradesChannelId" placeholder="Channel ID">
+                                </div>
+                                <div class="channel-item">
+                                    <label>Logs Channel</label>
+                                    <input type="text" id="logsChannelId" placeholder="Channel ID">
+                                </div>
+                                <div class="channel-item">
+                                    <label>Performance Channel</label>
+                                    <input type="text" id="performanceChannelId" placeholder="Channel ID">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" id="saveChannelConfig">
+                                <i class="fas fa-save"></i> Save Configuration
+                            </button>
+                        </div>
+                        
+                        <!-- Bot Activity -->
+                        <div class="card bot-activity-log">
+                            <h3>Recent Bot Activity</h3>
+                            <div class="activity-feed" id="discordActivityFeed">
+                                <!-- Activity will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Bot Control -->
+                        <div class="card discord-bot-control">
+                            <h3>Bot Control</h3>
+                            <div class="control-buttons">
+                                <button class="btn btn-success" id="startDiscordBot">
+                                    <i class="fas fa-play"></i> Start Bot
+                                </button>
+                                <button class="btn btn-warning" id="restartDiscordBot">
+                                    <i class="fas fa-sync"></i> Restart Bot
+                                </button>
+                                <button class="btn btn-danger" id="stopDiscordBot">
+                                    <i class="fas fa-stop"></i> Stop Bot
+                                </button>
+                            </div>
+                            <div class="bot-stats">
+                                <div class="stat">
+                                    <span>Uptime</span>
+                                    <span id="discordBotUptime">0h 0m</span>
+                                </div>
+                                <div class="stat">
+                                    <span>Messages Sent</span>
+                                    <span id="discordMessageCount">0</span>
+                                </div>
+                                <div class="stat">
+                                    <span>Commands Processed</span>
+                                    <span id="discordCommandCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Other screens will follow similar pattern -->
+            
+        </main>
+        
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="connection-status">
+                <span class="status-indicator connected"></span>
+                <span>Connected</span>
+            </div>
+            <div class="data-feed-status">
+                <span>Market Data: <span class="status-text">Live</span></span>
+            </div>
+            <div class="bot-activity">
+                <span>Bot: <span id="botActivityStatus">Analyzing...</span></span>
+            </div>
+            <div class="server-latency">
+                <span>Latency: <span id="latencyDisplay">12ms</span></span>
+            </div>
+            <div class="auto-save-status">
+                <i class="fas fa-save"></i>
+                <span>Auto-saved</span>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- API Configuration Modal -->
+    <div id="apiModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>API Configuration</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="apiConfigForm">
+                    <h3>Broker APIs</h3>
+                    <div class="api-section">
+                        <h4>Alpaca</h4>
+                        <input type="text" placeholder="API Key" id="alpacaKey">
+                        <input type="password" placeholder="API Secret" id="alpacaSecret">
+                    </div>
+                    <div class="api-section">
+                        <h4>Binance</h4>
+                        <input type="text" placeholder="API Key" id="binanceKey">
+                        <input type="password" placeholder="API Secret" id="binanceSecret">
+                    </div>
+                    <h3>AI APIs</h3>
+                    <div class="api-section">
+                        <h4>OpenAI</h4>
+                        <input type="text" placeholder="API Key" id="openaiKey">
+                    </div>
+                    <div class="api-section">
+                        <h4>Anthropic (Claude)</h4>
+                        <input type="text" placeholder="API Key" id="anthropicKey">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Configuration</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Panels -->
+    <div id="floatingPanels">
+        <!-- Bot Control Float -->
+        <div class="floating-panel bot-control-float" id="botControlFloat">
+            <div class="panel-header">
+                <span>Bot Control</span>
+                <button class="minimize-btn"><i class="fas fa-minus"></i></button>
+            </div>
+            <div class="panel-content">
+                <button class="btn-sm btn-pause">Pause</button>
+                <button class="btn-sm btn-resume">Resume</button>
+                <button class="btn-sm btn-stop">Stop</button>
+            </div>
+        </div>
+        
+        <!-- Social Float -->
+        <div class="floating-panel social-float" id="socialFloat">
+            <div class="panel-header">
+                <span>Quick Message</span>
+                <button class="minimize-btn"><i class="fas fa-minus"></i></button>
+            </div>
+            <div class="panel-content">
+                <input type="text" placeholder="Quick broadcast...">
+                <button class="btn-sm btn-send">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript Files -->
+    <script src="js/config.js"></script>
+    <script src="js/helpers.js"></script>
+    <script src="js/integration.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/websocket.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/trading.js"></script>
+    <script src="js/nab-integration.js"></script>
+    <script src="js/plus500-integration.js"></script>
+    <script src="js/screener.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/social.js"></script>
+    <script src="js/backtest.js"></script>
+    <script src="js/timezone.js"></script>
+    <script src="js/fx-calculator.js"></script>
+    <script src="js/pinescript.js"></script>
+    <script src="js/emergency.js"></script>
+    <script src="js/audio-alerts.js"></script>
+    <script src="js/news.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/webhooks.js"></script>
+    <script src="js/honeypot.js"></script>
+    <script src="js/backup.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/performance-dashboard.js"></script>
+    
+    <!-- Initialize App -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('AuraQuant Infinity Platform Loading...');
+            // Main app initialization will be handled by main.js
+        });
+    </script>
+</body>
+</html>

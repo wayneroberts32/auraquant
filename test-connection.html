@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraQuant Backend Connection Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+        }
+        .success {
+            background: rgba(52, 211, 153, 0.3);
+            border: 1px solid #34D399;
+        }
+        .error {
+            background: rgba(239, 68, 68, 0.3);
+            border: 1px solid #EF4444;
+        }
+        .pending {
+            background: rgba(251, 191, 36, 0.3);
+            border: 1px solid #FBBF24;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        .info-box {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3B82F6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .endpoint-list {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 AuraQuant Backend Connection Test</h1>
+        
+        <div class="info-box">
+            <strong>Backend URL:</strong> https://auraquant-backend.onrender.com<br>
+            <strong>Service ID:</strong> srv-d1r5mmodl3ps73f3mdog<br>
+            <strong>GitHub:</strong> wayneroberts32/auraquant-dashboard
+        </div>
+
+        <!-- Basic Connection Test -->
+        <div class="test-section">
+            <div class="test-title">1. Basic Connection Test</div>
+            <button onclick="testBasicConnection()">Test Connection</button>
+            <div id="basic-status" class="status pending">Click to test basic connection...</div>
+        </div>
+
+        <!-- API Health Check -->
+        <div class="test-section">
+            <div class="test-title">2. API Health Check</div>
+            <button onclick="testHealthCheck()">Check Health</button>
+            <div id="health-status" class="status pending">Click to check API health...</div>
+        </div>
+
+        <!-- WebSocket Test -->
+        <div class="test-section">
+            <div class="test-title">3. WebSocket Connection</div>
+            <button onclick="testWebSocket()">Connect WebSocket</button>
+            <button onclick="closeWebSocket()">Close WebSocket</button>
+            <div id="ws-status" class="status pending">Click to test WebSocket connection...</div>
+        </div>
+
+        <!-- Available Endpoints -->
+        <div class="test-section">
+            <div class="test-title">4. Available Endpoints</div>
+            <div class="endpoint-list">
+                <strong>Test these endpoints:</strong><br>
+                • GET /api/health - Health check<br>
+                • GET /api/status - System status<br>
+                • GET /api/bot/status - Bot status<br>
+                • GET /api/portfolio - Portfolio info<br>
+                • GET /api/positions - Current positions<br>
+                • GET /api/market/overview - Market overview<br>
+                • WS /ws - WebSocket connection<br>
+            </div>
+        </div>
+
+        <!-- Custom API Test -->
+        <div class="test-section">
+            <div class="test-title">5. Custom API Test</div>
+            <input type="text" id="custom-endpoint" placeholder="/api/health" style="width: 300px; padding: 8px; border-radius: 5px; border: none; margin-right: 10px;">
+            <button onclick="testCustomEndpoint()">Test Endpoint</button>
+            <div id="custom-status" class="status pending">Enter an endpoint to test...</div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'https://auraquant-backend.onrender.com';
+        const WS_URL = 'wss://auraquant-backend.onrender.com/ws';
+        let ws = null;
+
+        // Test basic connection
+        async function testBasicConnection() {
+            const statusDiv = document.getElementById('basic-status');
+            statusDiv.className = 'status pending';
+            statusDiv.innerHTML = 'Testing connection...';
+            
+            try {
+                const response = await fetch(BACKEND_URL, {
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `✅ Connected Successfully!<br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Connection Error: ${error.message}`;
+            }
+        }
+
+        // Test health check
+        async function testHealthCheck() {
+            const statusDiv = document.getElementById('health-status');
+            statusDiv.className = 'status pending';
+            statusDiv.innerHTML = 'Checking health...';
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/health`, {
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = `✅ API Health Check Passed!<br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.innerHTML = `⚠️ Health check returned status: ${response.status}`;
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Health Check Error: ${error.message}`;
+            }
+        }
+
+        // Test WebSocket connection
+        function testWebSocket() {
+            const statusDiv = document.getElementById('ws-status');
+            statusDiv.className = 'status pending';
+            statusDiv.innerHTML = 'Connecting to WebSocket...';
+            
+            try {
+                if (ws) {
+                    ws.close();
+                }
+                
+                ws = new WebSocket(WS_URL);
+                
+                ws.onopen = () => {
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = '✅ WebSocket Connected! Waiting for messages...';
+                    
+                    // Send a test message
+                    ws.send(JSON.stringify({
+                        type: 'ping',
+                        timestamp: new Date().toISOString()
+                    }));
+                };
+                
+                ws.onmessage = (event) => {
+                    statusDiv.innerHTML += `<br>📨 Message received: ${event.data}`;
+                };
+                
+                ws.onerror = (error) => {
+                    statusDiv.className = 'status error';
+                    statusDiv.innerHTML = `❌ WebSocket Error: ${error.message || 'Connection failed'}`;
+                };
+                
+                ws.onclose = () => {
+                    statusDiv.innerHTML += '<br>🔌 WebSocket Disconnected';
+                };
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ WebSocket Error: ${error.message}`;
+            }
+        }
+
+        // Close WebSocket
+        function closeWebSocket() {
+            if (ws) {
+                ws.close();
+                const statusDiv = document.getElementById('ws-status');
+                statusDiv.className = 'status pending';
+                statusDiv.innerHTML = 'WebSocket closed';
+            }
+        }
+
+        // Test custom endpoint
+        async function testCustomEndpoint() {
+            const endpoint = document.getElementById('custom-endpoint').value || '/api/health';
+            const statusDiv = document.getElementById('custom-status');
+            statusDiv.className = 'status pending';
+            statusDiv.innerHTML = `Testing ${endpoint}...`;
+            
+            try {
+                const url = endpoint.startsWith('http') ? endpoint : `${BACKEND_URL}${endpoint}`;
+                const response = await fetch(url, {
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const contentType = response.headers.get('content-type');
+                let data;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    data = await response.text();
+                }
+                
+                if (response.ok) {
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = `✅ ${endpoint} - Status: ${response.status}<br><pre>${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.innerHTML = `⚠️ ${endpoint} - Status: ${response.status}<br><pre>${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Error testing ${endpoint}: ${error.message}`;
+            }
+        }
+
+        // Run basic test on page load
+        window.onload = () => {
+            testBasicConnection();
+        };
+    </script>
+</body>
+</html>

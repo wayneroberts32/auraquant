@@ -1,0 +1,113 @@
+services:
+  # Main Backend API Service
+  - type: web
+    name: auraquant-backend
+    runtime: python
+    plan: standard
+    region: oregon # Low latency region
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: |
+      uvicorn app:app --host 0.0.0.0 --port $PORT --workers 4
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: auraquant-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: auraquant-redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      # API Keys (to be filled via dashboard)
+      - key: BINANCE_API_KEY
+        sync: false
+      - key: BINANCE_API_SECRET
+        sync: false
+      - key: CRYPTO_COM_API_KEY
+        sync: false
+      - key: CRYPTO_COM_API_SECRET
+        sync: false
+      - key: INDEPENDENT_RESERVE_API_KEY
+        sync: false
+      - key: INDEPENDENT_RESERVE_API_SECRET
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: NEWS_API_KEY
+        sync: false
+      - key: DISCORD_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TWITTER_API_KEY
+        sync: false
+      - key: TWITTER_API_SECRET
+        sync: false
+      - key: ALPACA_API_KEY
+        sync: false
+      - key: ALPACA_API_SECRET
+        sync: false
+      - key: COINMARKETCAP_API_KEY
+        sync: false
+      - key: COINGECKO_API_KEY
+        sync: false
+      - key: YAHOO_FINANCE_API_KEY
+        sync: false
+    autoDeploy: false # Manual deployment for safety
+    healthCheckPath: /health
+    domains:
+      - auraquant-backend.onrender.com
+
+  # Background Worker Service
+  - type: worker
+    name: auraquant-worker
+    runtime: python
+    plan: standard
+    region: oregon
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: |
+      python worker.py
+    envVars:
+      - fromGroup: auraquant-backend
+
+  # Webhook Service
+  - type: web
+    name: auraquant-webhooks
+    runtime: python
+    plan: standard
+    region: oregon
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: |
+      uvicorn webhooks.app:app --host 0.0.0.0 --port $PORT --workers 2
+    envVars:
+      - fromGroup: auraquant-backend
+    healthCheckPath: /webhook/health
+    domains:
+      - auraquant-webhooks.onrender.com
+
+databases:
+  - name: auraquant-db
+    plan: standard
+    databaseName: auraquant
+    user: auraquant_admin
+    region: oregon
+    version: "15"
+    postgresMajorVersion: 15
+
+  - name: auraquant-redis
+    type: redis
+    plan: standard
+    region: oregon
+    maxmemoryPolicy: allkeys-lru

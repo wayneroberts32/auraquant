@@ -1,0 +1,87 @@
+name = "auraquant-infinity"
+main = "index.html"
+compatibility_date = "2024-01-01"
+workers_dev = true
+
+[site]
+bucket = "./dist"
+entry-point = "workers-site"
+
+[env.production]
+name = "auraquant-infinity-prod"
+route = "auraquant.com/*"
+zone_id = "YOUR_ZONE_ID"
+
+[env.staging]
+name = "auraquant-infinity-staging"
+route = "staging.auraquant.com/*"
+
+[build]
+command = "npm run build"
+watch_paths = ["js/**/*.js", "css/**/*.css", "index.html"]
+
+[build.upload]
+format = "service-worker"
+
+[[kv_namespaces]]
+binding = "SETTINGS_KV"
+id = "YOUR_KV_NAMESPACE_ID"
+preview_id = "YOUR_PREVIEW_KV_ID"
+
+[[kv_namespaces]]
+binding = "CACHE_KV"
+id = "YOUR_CACHE_KV_ID"
+preview_id = "YOUR_CACHE_PREVIEW_ID"
+
+[[durable_objects.bindings]]
+name = "TRADING_SESSION"
+class_name = "TradingSession"
+script_name = "trading-session"
+
+[[durable_objects.bindings]]
+name = "MARKET_DATA"
+class_name = "MarketData"
+script_name = "market-data"
+
+[vars]
+ENVIRONMENT = "production"
+API_VERSION = "v1"
+MAX_CONCURRENT_CONNECTIONS = "1000"
+RATE_LIMIT_PER_MINUTE = "60"
+BACKEND_URL = "https://auraquant-backend.onrender.com"
+WEBSOCKET_URL = "wss://auraquant-backend.onrender.com/ws"
+WEBHOOK_URL = "https://auraquant-webhooks.onrender.com"
+
+# Secrets should be set via wrangler secret put
+# wrangler secret put ALPACA_API_KEY
+# wrangler secret put ALPACA_SECRET_KEY
+# wrangler secret put BINANCE_API_KEY
+# wrangler secret put BINANCE_SECRET_KEY
+# wrangler secret put IB_USERNAME
+# wrangler secret put IB_PASSWORD
+# wrangler secret put OPENAI_API_KEY
+# wrangler secret put CLAUDE_API_KEY
+# wrangler secret put TELEGRAM_BOT_TOKEN
+# wrangler secret put DISCORD_WEBHOOK_URL
+# wrangler secret put SENDGRID_API_KEY
+# wrangler secret put JWT_SECRET
+
+[[r2_buckets]]
+binding = "BACKUP_BUCKET"
+bucket_name = "auraquant-backups"
+
+[observability]
+enabled = true
+
+[logpush]
+enabled = true
+destination = "s3://your-logs-bucket"
+
+[analytics_engine_datasets]
+TRADING_ANALYTICS = "trading_analytics"
+
+[compatibility_flags]
+nodejs_compat = true
+
+[placement]
+mode = "smart"
