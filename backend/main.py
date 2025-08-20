@@ -100,10 +100,18 @@ manager = ConnectionManager()
 @app.get("/")
 async def root():
     return {
+        "message": "AuraQuant backend is running.",
         "status": "online",
         "platform": "AuraQuant Infinity",
         "version": "1.0.0",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.utcnow().isoformat(),
+        "endpoints": {
+            "health": "/api/health",
+            "auth": "/api/auth/login",
+            "trading": "/api/trading/positions",
+            "bot": "/api/bot/status",
+            "websocket": "/ws"
+        }
     }
 
 @app.get("/api/health")
