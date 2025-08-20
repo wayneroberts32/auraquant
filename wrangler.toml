@@ -1,7 +1,0 @@
-name = "auraquant-frontend"
-pages_build_output_dir = "./"
-
-[vars]
-API_URL = "https://auraquant-api-prod.onrender.com"
-WS_URL = "wss://auraquant-api-prod.onrender.com"
-ENVIRONMENT = "production"

@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "AuraQuant Infinity - Professional Live Trading Platform Frontend",
   "main": "index.html",
-  "scripts": {
-    "start": "echo 'Static site - no build needed'",
-    "build": "echo 'No build required - static site'"
-  },
   "keywords": [
     "trading",
     "finance",
@@ -15,10 +11,5 @@
     "stocks"
   ],
   "author": "AuraQuant Team",
-  "license": "PROPRIETARY",
-  "dependencies": {},
-  "devDependencies": {},
-  "engines": {
-    "node": ">=18.0.0"
-  }
+  "license": "PROPRIETARY"
 }
