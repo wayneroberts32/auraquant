@@ -3,17 +3,19 @@
  * Manages the overall application state and initialization
  */
 
-// Define App in global scope immediately to prevent "App is not defined" errors
-window.App = {
-    version: '1.0.0',
-    initialized: false,
-    currentScreen: 'dashboard',
-    user: null,
-    settings: {},
-    modules: {},
+// Define App as a proper ES6 class
+class App {
+    constructor() {
+        this.version = '1.0.0';
+        this.initialized = false;
+        this.currentScreen = 'dashboard';
+        this.user = null;
+        this.settings = {};
+        this.modules = {};
+    }
     
     // Initialize the application
-    init: async function() {
+    async init() {
         if (this.initialized) {
             console.log('App already initialized');
             return;
@@ -49,10 +51,10 @@ window.App = {
             console.error('❌ Application initialization failed:', error);
             this.handleInitError(error);
         }
-    },
+    }
     
     // Initialize configuration
-    initConfig: async function() {
+    async initConfig() {
         console.log('Loading configuration...');
         if (window.Config && window.Config.initialize) {
             try {
@@ -61,10 +63,10 @@ window.App = {
                 console.warn('Config initialization failed, using defaults:', error);
             }
         }
-    },
+    }
     
     // Setup event listeners
-    setupEventListeners: function() {
+    setupEventListeners() {
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.handleTabSwitch(e));
@@ -102,10 +104,10 @@ window.App = {
         // Logout button
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) logoutBtn.addEventListener('click', () => this.logout());
-    },
+    }
     
     // Initialize UI
-    initUI: function() {
+    initUI() {
         // Update clocks
         this.updateClocks();
         setInterval(() => this.updateClocks(), 1000);
@@ -120,10 +122,10 @@ window.App = {
         
         // Initialize floating panels
         this.initFloatingPanels();
-    },
+    }
     
     // Check authentication
-    checkAuth: function() {
+    checkAuth() {
         const token = localStorage.getItem('auth_token');
         const savedUser = localStorage.getItem('user_data');
         
@@ -138,10 +140,10 @@ window.App = {
         } else {
             this.showLoginScreen();
         }
-    },
+    }
     
     // Initialize modules
-    initModules: async function() {
+    async initModules() {
         const moduleList = [
             'websocket',
             'trading',
@@ -164,10 +166,10 @@ window.App = {
                 console.warn(`Failed to initialize ${moduleName}:`, error);
             }
         }
-    },
+    }
     
     // Handle login
-    handleLogin: async function(e) {
+    async handleLogin(e) {
         e.preventDefault();
         
         const email = document.getElementById('email').value;
@@ -212,10 +214,10 @@ window.App = {
                 console.warn('Backend login failed, using demo mode:', error);
             }
         }
-    },
+    }
     
     // Show main platform
-    showMainPlatform: function() {
+    showMainPlatform() {
         const loginScreen = document.getElementById('loginScreen');
         const mainPlatform = document.getElementById('mainPlatform');
         
@@ -227,19 +229,19 @@ window.App = {
         if (balanceElement) {
             balanceElement.textContent = '$100,000.00';
         }
-    },
+    }
     
     // Show login screen
-    showLoginScreen: function() {
+    showLoginScreen() {
         const loginScreen = document.getElementById('loginScreen');
         const mainPlatform = document.getElementById('mainPlatform');
         
         if (loginScreen) loginScreen.style.display = 'flex';
         if (mainPlatform) mainPlatform.style.display = 'none';
-    },
+    }
     
     // Handle tab switching
-    handleTabSwitch: function(e) {
+    handleTabSwitch(e) {
         const tabBtn = e.currentTarget;
         const tabName = tabBtn.dataset.tab;
         
@@ -263,10 +265,10 @@ window.App = {
         const formId = formMap[tabName];
         const form = document.getElementById(formId);
         if (form) form.classList.add('active');
-    },
+    }
     
     // Handle navigation
-    handleNavigation: function(e) {
+    handleNavigation(e) {
         const tab = e.currentTarget;
         const screen = tab.dataset.screen;
         
@@ -292,10 +294,10 @@ window.App = {
             // Trigger screen-specific initialization
             this.initScreen(screen);
         }
-    },
+    }
     
     // Initialize specific screen
-    initScreen: function(screen) {
+    initScreen(screen) {
         switch(screen) {
             case 'trading':
                 if (this.modules.charts) {
@@ -313,10 +315,10 @@ window.App = {
                 }
                 break;
         }
-    },
+    }
     
     // Update clocks
-    updateClocks: function() {
+    updateClocks() {
         try {
             const now = new Date();
             
@@ -346,19 +348,19 @@ window.App = {
         } catch (error) {
             console.warn('Error updating clocks:', error);
         }
-    },
+    }
     
     // Initialize tooltips
-    initTooltips: function() {
+    initTooltips() {
         document.querySelectorAll('[title]').forEach(element => {
             const title = element.getAttribute('title');
             element.setAttribute('data-tooltip', title);
             element.removeAttribute('title');
         });
-    },
+    }
     
     // Initialize charts
-    initCharts: function() {
+    initCharts() {
         const chartContainer = document.getElementById('tradingChart');
         if (chartContainer && window.LightweightCharts) {
             try {
@@ -386,10 +388,10 @@ window.App = {
                 console.warn('Failed to initialize chart:', error);
             }
         }
-    },
+    }
     
     // Generate sample candle data
-    generateSampleCandleData: function() {
+    generateSampleCandleData() {
         const data = [];
         const now = Date.now();
         let price = 100;
@@ -413,10 +415,10 @@ window.App = {
         }
         
         return data;
-    },
+    }
     
     // Initialize floating panels
-    initFloatingPanels: function() {
+    initFloatingPanels() {
         const panels = document.querySelectorAll('.floating-panel');
         panels.forEach(panel => {
             const minimizeBtn = panel.querySelector('.minimize-btn');
@@ -426,36 +428,36 @@ window.App = {
                 });
             }
         });
-    },
+    }
     
     // Bot control functions
-    pauseBot: function() {
+    pauseBot() {
         console.log('Pausing bot...');
         const pauseBtn = document.getElementById('pauseBot');
         const resumeBtn = document.getElementById('resumeBot');
         if (pauseBtn) pauseBtn.style.display = 'none';
         if (resumeBtn) resumeBtn.style.display = 'inline-block';
         this.showNotification('Bot paused', 'info');
-    },
+    }
     
-    resumeBot: function() {
+    resumeBot() {
         console.log('Resuming bot...');
         const pauseBtn = document.getElementById('pauseBot');
         const resumeBtn = document.getElementById('resumeBot');
         if (pauseBtn) pauseBtn.style.display = 'inline-block';
         if (resumeBtn) resumeBtn.style.display = 'none';
         this.showNotification('Bot resumed', 'success');
-    },
+    }
     
-    stopBot: function() {
+    stopBot() {
         if (confirm('Are you sure you want to stop the bot?')) {
             console.log('Stopping bot...');
             this.showNotification('Bot stopped', 'error');
         }
-    },
+    }
     
     // Toggle trading mode
-    toggleTradingMode: function() {
+    toggleTradingMode() {
         const toggle = document.getElementById('tradingModeToggle');
         if (!toggle) return;
         
@@ -475,17 +477,17 @@ window.App = {
                 this.showNotification('Switched to PAPER trading', 'success');
             }
         }
-    },
+    }
     
     // Change bot version
-    changeBotVersion: function(e) {
+    changeBotVersion(e) {
         const version = e.target.value;
         console.log('Changing bot version to:', version);
         this.showNotification(`Bot version changed to ${version}`, 'info');
-    },
+    }
     
     // Show notification
-    showNotification: function(message, type = 'info') {
+    showNotification(message, type = 'info') {
         console.log(`[${type.toUpperCase()}] ${message}`);
         
         // Create visual notification if container exists
@@ -501,10 +503,10 @@ window.App = {
                 notification.remove();
             }, 5000);
         }
-    },
+    }
     
     // Start real-time updates
-    startRealtimeUpdates: function() {
+    startRealtimeUpdates() {
         // Update market data every 5 seconds
         setInterval(() => {
             this.updateMarketData();
@@ -514,10 +516,10 @@ window.App = {
         setInterval(() => {
             this.updateBotStatus();
         }, 10000);
-    },
+    }
     
     // Update market data
-    updateMarketData: function() {
+    updateMarketData() {
         // Simulate market data updates
         const balance = document.getElementById('accountBalance');
         if (balance) {
@@ -533,29 +535,29 @@ window.App = {
             pnl.textContent = (change >= 0 ? '+' : '') + '$' + change.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             pnl.className = change >= 0 ? 'value positive' : 'value negative';
         }
-    },
+    }
     
     // Update bot status
-    updateBotStatus: function() {
+    updateBotStatus() {
         const statusText = document.getElementById('botActivityStatus');
         if (statusText) {
             const statuses = ['Analyzing...', 'Scanning markets...', 'Evaluating positions...', 'Monitoring trades...'];
             statusText.textContent = statuses[Math.floor(Math.random() * statuses.length)];
         }
-    },
+    }
     
     // Logout
-    logout: function() {
+    logout() {
         if (confirm('Are you sure you want to logout?')) {
             localStorage.removeItem('auth_token');
             localStorage.removeItem('user_data');
             this.user = null;
             this.showLoginScreen();
         }
-    },
+    }
     
     // Handle initialization error
-    handleInitError: function(error) {
+    handleInitError(error) {
         console.error('Initialization error:', error);
         // Show error message to user
         const errorDiv = document.createElement('div');
@@ -568,24 +570,27 @@ window.App = {
         `;
         document.body.appendChild(errorDiv);
     }
-};
+}
 
-// Also create an alias
-window.app = window.App;
+// Make App available globally
+window.App = App;
+
+// Create a single instance
+window.app = new App();
 
 // Ensure App is available globally even before DOM loads
-console.log('App object created and available globally');
+console.log('App class created and instance available globally');
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
         console.log('DOM loaded, initializing App...');
-        window.App.init();
+        window.app.init();
     });
 } else {
     // DOM already loaded
     console.log('DOM already loaded, initializing App...');
     setTimeout(function() {
-        window.App.init();
+        window.app.init();
     }, 0);
 }
