@@ -1,55 +1,15 @@
 services:
-  # Main Backend API Service
   - type: web
     name: auraquant-api-prod
     runtime: python
     plan: free
-    region: oregon # Low latency region
-    buildCommand: |
-      pip install --upgrade pip
-      pip install -r requirements.txt
-    startCommand: python start.py
+    buildCommand: "pip install -r requirements-minimal.txt"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /api/health
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
       - key: ENVIRONMENT
         value: production
-      - key: JWT_SECRET
+      - key: SECRET_KEY
         generateValue: true
-      - key: ENCRYPTION_KEY
-        generateValue: true
-      # API Keys (to be filled via dashboard)
-      - key: BINANCE_API_KEY
-        sync: false
-      - key: BINANCE_API_SECRET
-        sync: false
-      - key: CRYPTO_COM_API_KEY
-        sync: false
-      - key: CRYPTO_COM_API_SECRET
-        sync: false
-      - key: INDEPENDENT_RESERVE_API_KEY
-        sync: false
-      - key: INDEPENDENT_RESERVE_API_SECRET
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: NEWS_API_KEY
-        sync: false
-      - key: DISCORD_BOT_TOKEN
-        sync: false
-      - key: TELEGRAM_BOT_TOKEN
-        sync: false
-      - key: TWITTER_API_KEY
-        sync: false
-      - key: TWITTER_API_SECRET
-        sync: false
-      - key: ALPACA_API_KEY
-        sync: false
-      - key: ALPACA_API_SECRET
-        sync: false
-      - key: COINMARKETCAP_API_KEY
-        sync: false
-      - key: COINGECKO_API_KEY
-        sync: false
-      - key: YAHOO_FINANCE_API_KEY
-        sync: false
-    autoDeploy: false # Manual deployment for safety
-    healthCheckPath: /health
