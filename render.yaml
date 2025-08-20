@@ -1,7 +1,7 @@
 services:
   # Backend API Service
   - type: web
-    name: auraquant-backend
+    name: auraquant-live-api
     runtime: python
     plan: free
     branch: main
