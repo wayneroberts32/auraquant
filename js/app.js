@@ -7,7 +7,7 @@
     'use strict';
     
     // Main Application Object
-    window.app = {
+    window.App = window.app = {
         version: '1.0.0',
         initialized: false,
         currentScreen: 'dashboard',
