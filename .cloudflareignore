@@ -1,0 +1,31 @@
+# Ignore backend folder for Cloudflare Pages
+backend/
+backend/**
+
+# Ignore development files
+*.log
+.env
+.env.*
+node_modules/
+.git/
+.gitignore
+
+# Ignore build scripts
+deploy.sh
+deploy.ps1
+git-bash-deploy.sh
+clear_render_backend.ps1
+
+# Ignore documentation
+*.md
+LICENSE
+
+# Ignore wrangler configs we don't need
+wrangler-pages.toml
+.wrangler/
+
+# Ignore test files
+test/
+tests/
+*.test.js
+*.spec.js

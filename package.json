@@ -4,13 +4,11 @@
   "description": "AuraQuant Infinity - Professional Live Trading Platform",
   "main": "index.html",
   "scripts": {
-    "start": "wrangler dev",
-    "build": "webpack --mode production",
-    "deploy": "wrangler publish",
-    "dev": "webpack-dev-server --mode development --open",
-    "test": "jest",
-    "lint": "eslint js/*.js",
-    "format": "prettier --write 'js/*.js' 'css/*.css'"
+    "start": "echo 'Static site - no build needed'",
+    "build": "echo 'No build required - static site'",
+    "deploy": "wrangler pages deploy",
+    "dev": "python -m http.server 8080",
+    "test": "echo 'No tests configured'"
   },
   "keywords": [
     "trading",
