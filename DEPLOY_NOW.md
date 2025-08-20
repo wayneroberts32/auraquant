@@ -26,7 +26,7 @@
 4. **Configure Service Settings**
    Fill in these exact values:
    ```
-   Name: auraquant-backend
+   Name: auraquant-api-prod  (or try: auraquant-wayne, auraquant-trading-api)
    Region: Oregon (US West)
    Branch: main
    Root Directory: (leave empty)
