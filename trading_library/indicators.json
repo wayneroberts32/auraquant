@@ -1,0 +1,79 @@
+{
+  "indicators": [
+    {
+      "name": "MACD",
+      "type": "momentum",
+      "params": {
+        "fast": 12,
+        "slow": 26,
+        "signal": 9
+      },
+      "overlay": false,
+      "color": {
+        "main": "#00FF99",
+        "signal": "#FF00CC",
+        "histogram": "#00FFFF"
+      }
+    },
+    {
+      "name": "RSI",
+      "type": "momentum",
+      "params": {
+        "period": 14,
+        "overbought": 70,
+        "oversold": 30
+      },
+      "overlay": false,
+      "color": "#FFAA00"
+    },
+    {
+      "name": "Klinger",
+      "type": "volume",
+      "params": {
+        "fast": 34,
+        "slow": 55,
+        "signal": 13
+      },
+      "overlay": false,
+      "color": {
+        "main": "#00FF99",
+        "signal": "#FF00CC"
+      }
+    },
+    {
+      "name": "Volume",
+      "type": "volume",
+      "params": {
+        "ma_period": 20
+      },
+      "overlay": false,
+      "color": {
+        "up": "rgba(0, 255, 153, 0.3)",
+        "down": "rgba(255, 51, 102, 0.3)"
+      }
+    },
+    {
+      "name": "EMA",
+      "type": "trend",
+      "params": {
+        "periods": [9, 21, 50, 200]
+      },
+      "overlay": true,
+      "colors": ["#00FF99", "#FF00CC", "#00FFFF", "#FFAA00"]
+    },
+    {
+      "name": "Bollinger Bands",
+      "type": "volatility",
+      "params": {
+        "period": 20,
+        "stdDev": 2
+      },
+      "overlay": true,
+      "color": {
+        "upper": "#FF00CC",
+        "middle": "#00FF99",
+        "lower": "#FF00CC"
+      }
+    }
+  ]
+}

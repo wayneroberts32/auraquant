@@ -1,0 +1,100 @@
+{
+  "brokers": {
+    "crypto.com": {
+      "name": "Crypto.com",
+      "type": "crypto",
+      "api_url": "https://api.crypto.com/v2",
+      "websocket_url": "wss://stream.crypto.com/v2/market",
+      "status": "connected",
+      "markets": ["spot", "defi", "nft"],
+      "fees": {
+        "maker": 0.004,
+        "taker": 0.004
+      }
+    },
+    "binance": {
+      "name": "Binance",
+      "type": "crypto",
+      "api_url": "https://api.binance.com/api/v3",
+      "websocket_url": "wss://stream.binance.com:9443/ws",
+      "status": "connected",
+      "markets": ["spot", "margin", "futures"],
+      "fees": {
+        "maker": 0.001,
+        "taker": 0.001
+      }
+    },
+    "alpaca": {
+      "name": "Alpaca",
+      "type": "stocks_crypto",
+      "api_url": "https://api.alpaca.markets/v2",
+      "websocket_url": "wss://stream.alpaca.markets",
+      "status": "disconnected",
+      "markets": ["stocks", "crypto"],
+      "paper_trading": true,
+      "fees": {
+        "stocks": 0,
+        "crypto": 0.0025
+      }
+    },
+    "okx": {
+      "name": "OKX",
+      "type": "crypto",
+      "api_url": "https://www.okx.com/api/v5",
+      "websocket_url": "wss://ws.okx.com:8443/ws/v5/public",
+      "status": "disconnected",
+      "markets": ["spot", "derivatives", "copy"],
+      "fees": {
+        "maker": 0.0008,
+        "taker": 0.001
+      }
+    },
+    "ibkr": {
+      "name": "Interactive Brokers",
+      "type": "global",
+      "api_url": "https://api.ibkr.com",
+      "gateway_port": 5000,
+      "status": "disconnected",
+      "markets": ["stocks", "options", "futures", "forex", "crypto"],
+      "fees": {
+        "stocks": 0.0035,
+        "options": 0.65,
+        "futures": 0.85
+      }
+    },
+    "nab": {
+      "name": "NAB Bank",
+      "type": "australian",
+      "api_url": "https://api.nabtrade.com.au",
+      "oauth_url": "https://ib.nab.com.au/login",
+      "status": "disconnected",
+      "markets": ["asx", "international"],
+      "fees": {
+        "asx": 14.95,
+        "international": 19.95
+      }
+    },
+    "plus500": {
+      "name": "Plus500",
+      "type": "cfd",
+      "api_url": "manual",
+      "web_url": "https://app.plus500.com",
+      "status": "manual_mode",
+      "markets": ["cfd"],
+      "fees": {
+        "spread": "variable",
+        "overnight": 0.0096
+      }
+    }
+  },
+  "paper_trading": {
+    "enabled": true,
+    "balance": 100000,
+    "currency": "USD"
+  },
+  "live_trading": {
+    "enabled": false,
+    "require_2fa": true,
+    "max_position_size": 0.1
+  }
+}

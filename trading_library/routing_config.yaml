@@ -1,0 +1,56 @@
+routing:
+  websocket:
+    enabled: true
+    url: wss://api.auraquant.com/ws
+    reconnect: true
+    heartbeat: 30
+    channels:
+      - trades
+      - quotes
+      - alerts
+      - positions
+      
+  webhook:
+    enabled: true
+    endpoints:
+      tradingview: https://api.auraquant.com/webhook/tradingview
+      discord: https://discord.com/api/webhooks/YOUR_WEBHOOK_ID
+      telegram: https://api.telegram.org/bot_YOUR_TOKEN/
+      alerts: https://api.auraquant.com/webhook/alerts
+    
+  social:
+    discord:
+      enabled: true
+      channel_id: alerts
+      latency_target: 50
+    telegram:
+      enabled: true
+      chat_id: -1001234567890
+      latency_target: 50
+    whatsapp:
+      enabled: true
+      phone: +61400000000
+      latency_target: 100
+    email:
+      enabled: true
+      smtp: smtp.gmail.com
+      port: 587
+      latency_target: 500
+    x_twitter:
+      enabled: true
+      handle: @AuraQuant
+      latency_target: 100
+      
+  priorities:
+    critical: 
+      channels: [websocket, discord, telegram]
+      latency: 10
+    high:
+      channels: [websocket, discord, telegram, email]
+      latency: 50
+    medium:
+      channels: [webhook, email]
+      latency: 100
+    low:
+      channels: [email]
+      latency: 500

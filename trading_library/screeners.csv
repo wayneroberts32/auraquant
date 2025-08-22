@@ -1,0 +1,13 @@
+Category,Name,Description,Filters,Priority,Sound
+Momentum,Momentum Squeeze,Detects small/mid caps with explosive volume,volume>3x_avg AND change>5%,HIGH,alert_high.mp3
+Momentum,Volume Spike,Unusual volume activity,volume>5x_avg,HIGH,alert_high.mp3
+Momentum,Breakout,Price breaking resistance,price>resistance AND volume>2x_avg,MEDIUM,alert_medium.mp3
+Gap,Gap Up,Premarket gap up >3%,gap>3% AND premarket=true,HIGH,alert_medium.mp3
+Gap,Gap Down,Premarket gap down >3%,gap<-3% AND premarket=true,HIGH,alert_medium.mp3
+Gap,Intraday Gap,Sudden price gap during trading,gap>2% AND market_hours=true,MEDIUM,alert_low.mp3
+News,Earnings Beat,Positive earnings surprise,earnings_surprise>10%,HIGH,alert_news.mp3
+News,Breaking News,Major news catalyst,news_score>8,HIGH,alert_news.mp3
+News,Sector News,Industry-wide news impact,sector_news=true,MEDIUM,alert_low.mp3
+Halt,Trading Halt,Stock halted for volatility,halt_status=T1,CRITICAL,alert_critical.mp3
+Halt,Circuit Breaker,Market-wide halt triggered,halt_status=MWCB,CRITICAL,alert_critical.mp3
+Halt,News Pending,Halted pending news,halt_status=T2,HIGH,alert_high.mp3

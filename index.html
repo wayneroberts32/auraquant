@@ -441,6 +441,11 @@
                 <div>NYSE: <span id="nyseClock">--:--</span></div>
             </div>
             
+            <!-- Help Center -->
+            <button class="btn" style="background: rgba(255,255,255,0.1); padding: 8px 12px;" onclick="window.open('help.html', '_blank')" data-status="live">
+                <i class="fas fa-question-circle"></i> Help
+            </button>
+            
             <!-- Export Button -->
             <button class="btn" style="background: rgba(255,255,255,0.1); padding: 8px 12px;" data-status="live">
                 <i class="fas fa-download"></i>
@@ -499,6 +504,11 @@
                         </select>
                         
                         <button class="btn btn-primary" data-status="live">EXECUTE TRADE</button>
+                        
+                        <!-- Paper/Real Toggle -->
+                        <button class="btn" style="background: rgba(255,170,0,0.2); border: 1px solid #FFAA00;" onclick="toggleTradingMode()" data-status="live">
+                            <i class="fas fa-exchange-alt"></i> Toggle Paper/Real
+                        </button>
                     </div>
                     
                     <!-- Risk Caps Display -->
@@ -745,6 +755,11 @@
         let chart = null;
         let candlestickSeries = null;
         let volumeSeries = null;
+        let macdLine = null;
+        let macdSignal = null;
+        let macdHistogram = null;
+        let rsiLine = null;
+        let klingerLine = null;
         
         // Login Handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -815,6 +830,43 @@
                 scaleMargins: { top: 0.8, bottom: 0 },
             });
             
+            // Add MACD indicator
+            macdLine = chart.addLineSeries({
+                color: '#00FF99',
+                lineWidth: 2,
+                priceScaleId: 'macd',
+                scaleMargins: { top: 0.9, bottom: 0 },
+            });
+            
+            macdSignal = chart.addLineSeries({
+                color: '#FF00CC',
+                lineWidth: 1,
+                priceScaleId: 'macd',
+                scaleMargins: { top: 0.9, bottom: 0 },
+            });
+            
+            macdHistogram = chart.addHistogramSeries({
+                color: '#00FFFF',
+                priceScaleId: 'macd',
+                scaleMargins: { top: 0.9, bottom: 0 },
+            });
+            
+            // Add RSI indicator
+            rsiLine = chart.addLineSeries({
+                color: '#FFAA00',
+                lineWidth: 2,
+                priceScaleId: 'rsi',
+                scaleMargins: { top: 0.85, bottom: 0.1 },
+            });
+            
+            // Add Klinger indicator
+            klingerLine = chart.addLineSeries({
+                color: '#FF3366',
+                lineWidth: 2,
+                priceScaleId: 'klinger',
+                scaleMargins: { top: 0.95, bottom: 0.05 },
+            });
+            
             // Generate live data
             generateLiveData();
             
@@ -858,6 +910,20 @@
             
             candlestickSeries.setData(data);
             volumeSeries.setData(volumeData);
+            
+            // Calculate and set MACD data
+            const macdData = calculateMACD(data);
+            macdLine.setData(macdData.macd);
+            macdSignal.setData(macdData.signal);
+            macdHistogram.setData(macdData.histogram);
+            
+            // Calculate and set RSI data
+            const rsiData = calculateRSI(data);
+            rsiLine.setData(rsiData);
+            
+            // Calculate and set Klinger data
+            const klingerData = calculateKlinger(data, volumeData);
+            klingerLine.setData(klingerData);
             
             // Simulate real-time updates
             setInterval(() => {
@@ -978,8 +1044,154 @@
             setTimeout(() => this.style.animation = '', 500);
         });
         
-        // Check last login on load
+        // Indicator calculation functions
+        function calculateMACD(data) {
+            const ema12 = calculateEMA(data, 12);
+            const ema26 = calculateEMA(data, 26);
+            const macd = [];
+            const signal = [];
+            const histogram = [];
+            
+            for (let i = 0; i < data.length; i++) {
+                if (i >= 25) {
+                    const macdValue = ema12[i] - ema26[i];
+                    macd.push({ time: data[i].time, value: macdValue });
+                }
+            }
+            
+            // Signal line (9-period EMA of MACD)
+            const signalEMA = calculateEMAFromValues(macd, 9);
+            
+            for (let i = 0; i < macd.length; i++) {
+                if (i >= 8) {
+                    signal.push({ time: macd[i].time, value: signalEMA[i] });
+                    histogram.push({ 
+                        time: macd[i].time, 
+                        value: macd[i].value - signalEMA[i],
+                        color: macd[i].value > signalEMA[i] ? 'rgba(0, 255, 153, 0.5)' : 'rgba(255, 51, 102, 0.5)'
+                    });
+                }
+            }
+            
+            return { macd, signal, histogram };
+        }
+        
+        function calculateRSI(data, period = 14) {
+            const rsi = [];
+            let gains = 0;
+            let losses = 0;
+            
+            for (let i = 1; i <= period; i++) {
+                const change = data[i].close - data[i - 1].close;
+                if (change > 0) gains += change;
+                else losses -= change;
+            }
+            
+            let avgGain = gains / period;
+            let avgLoss = losses / period;
+            
+            for (let i = period; i < data.length; i++) {
+                const change = data[i].close - data[i - 1].close;
+                
+                if (change > 0) {
+                    avgGain = (avgGain * (period - 1) + change) / period;
+                    avgLoss = (avgLoss * (period - 1)) / period;
+                } else {
+                    avgGain = (avgGain * (period - 1)) / period;
+                    avgLoss = (avgLoss * (period - 1) - change) / period;
+                }
+                
+                const rs = avgGain / avgLoss;
+                const rsiValue = 100 - (100 / (1 + rs));
+                rsi.push({ time: data[i].time, value: rsiValue });
+            }
+            
+            return rsi;
+        }
+        
+        function calculateKlinger(data, volumeData) {
+            const klinger = [];
+            const period1 = 34;
+            const period2 = 55;
+            const signalPeriod = 13;
+            
+            for (let i = Math.max(period1, period2); i < data.length; i++) {
+                const tp = (data[i].high + data[i].low + data[i].close) / 3;
+                const prevTp = (data[i - 1].high + data[i - 1].low + data[i - 1].close) / 3;
+                const trend = tp > prevTp ? 1 : -1;
+                const cm = data[i].high - data[i].low;
+                const vf = volumeData[i].value * trend * cm;
+                
+                klinger.push({ time: data[i].time, value: vf / 1000000 });
+            }
+            
+            return klinger;
+        }
+        
+        function calculateEMA(data, period) {
+            const ema = [];
+            const k = 2 / (period + 1);
+            let sum = 0;
+            
+            for (let i = 0; i < period; i++) {
+                sum += data[i].close;
+            }
+            ema[period - 1] = sum / period;
+            
+            for (let i = period; i < data.length; i++) {
+                ema[i] = data[i].close * k + ema[i - 1] * (1 - k);
+            }
+            
+            return ema;
+        }
+        
+        function calculateEMAFromValues(data, period) {
+            const ema = [];
+            const k = 2 / (period + 1);
+            let sum = 0;
+            
+            for (let i = 0; i < Math.min(period, data.length); i++) {
+                sum += data[i].value;
+            }
+            ema[period - 1] = sum / period;
+            
+            for (let i = period; i < data.length; i++) {
+                ema[i] = data[i].value * k + ema[i - 1] * (1 - k);
+            }
+            
+            return ema;
+        }
+        
+        // Paper/Real trading toggle
+        let tradingMode = 'paper'; // Default to paper trading
+        
+        function toggleTradingMode() {
+            tradingMode = tradingMode === 'paper' ? 'real' : 'paper';
+            const modeIndicator = document.createElement('div');
+            modeIndicator.style.cssText = `
+                position: fixed;
+                top: 70px;
+                right: 20px;
+                background: ${tradingMode === 'paper' ? 'rgba(255, 170, 0, 0.2)' : 'rgba(255, 0, 0, 0.2)'};
+                color: ${tradingMode === 'paper' ? '#FFAA00' : '#FF3366'};
+                padding: 5px 10px;
+                border-radius: 4px;
+                font-size: 12px;
+                border: 1px solid ${tradingMode === 'paper' ? '#FFAA00' : '#FF3366'};
+            `;
+            modeIndicator.textContent = tradingMode === 'paper' ? '📝 PAPER TRADING' : '💰 REAL TRADING';
+            modeIndicator.id = 'tradingModeIndicator';
+            
+            const existing = document.getElementById('tradingModeIndicator');
+            if (existing) existing.remove();
+            document.body.appendChild(modeIndicator);
+        }
+        
+        // Initialize paper trading mode on load
         window.addEventListener('load', function() {
+            toggleTradingMode(); // Set to paper mode initially
+            toggleTradingMode(); // Toggle back to show indicator
+            
             const lastLogin = localStorage.getItem('lastLogin');
             if (lastLogin) {
                 document.getElementById('lastLogin').textContent = new Date(lastLogin).toLocaleString();

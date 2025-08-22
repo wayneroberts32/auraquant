@@ -1,0 +1,30 @@
+Symbol,Name,Market,Type,Exchange,Currency
+BTCUSD,Bitcoin,Crypto,Cryptocurrency,Binance,USD
+ETHUSD,Ethereum,Crypto,Cryptocurrency,Binance,USD
+DOGEUSD,Dogecoin,Crypto,Meme,Binance,USD
+SHIBUSDT,Shiba Inu,Crypto,Meme,Binance,USDT
+PEPEUSD,Pepe,Crypto,Meme,Binance,USD
+AAPL,Apple Inc,US,Stock,NASDAQ,USD
+TSLA,Tesla Inc,US,Stock,NASDAQ,USD
+NVDA,NVIDIA Corp,US,Stock,NASDAQ,USD
+MSFT,Microsoft Corp,US,Stock,NASDAQ,USD
+GOOGL,Alphabet Inc,US,Stock,NASDAQ,USD
+AMD,Advanced Micro Devices,US,Stock,NASDAQ,USD
+GME,GameStop Corp,US,Stock,NYSE,USD
+AMC,AMC Entertainment,US,Stock,NYSE,USD
+BBBY,Bed Bath & Beyond,US,Stock,NASDAQ,USD
+BHP,BHP Group,AU,Stock,ASX,AUD
+CBA,Commonwealth Bank,AU,Stock,ASX,AUD
+CSL,CSL Limited,AU,Stock,ASX,AUD
+WBC,Westpac Banking,AU,Stock,ASX,AUD
+ANZ,ANZ Banking Group,AU,Stock,ASX,AUD
+RIO,Rio Tinto,AU,Stock,ASX,AUD
+AUDUSD,Australian Dollar,FX,Currency,Forex,USD
+EURUSD,Euro,FX,Currency,Forex,USD
+GBPUSD,British Pound,FX,Currency,Forex,USD
+USDJPY,US Dollar/Yen,FX,Currency,Forex,JPY
+XAUUSD,Gold,Commodity,Metal,COMEX,USD
+SPX,S&P 500,US,Index,NYSE,USD
+NDX,NASDAQ 100,US,Index,NASDAQ,USD
+DJI,Dow Jones,US,Index,NYSE,USD
+VIX,Volatility Index,US,Index,CBOE,USD
