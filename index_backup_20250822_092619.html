@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraQuant ∞ - Quantum Trading Platform</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/tradingview-style.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/charts.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/help.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+    
+    <!-- External Libraries -->
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment-timezone@0.5.43/builds/moment-timezone-with-data.min.js"></script>
+    
+    <!-- TradingView Widget -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    
+    <style>
+        /* Custom AuraQuant Branding Colors */
+        :root {
+            --auraquant-primary: #00ff88;
+            --auraquant-secondary: #00ccff;
+            --auraquant-accent: #ff00ff;
+            --auraquant-gold: #ffaa00;
+            --auraquant-dark: #0a0e1b;
+            --auraquant-darker: #060810;
+        }
+        
+        /* Animated Logo Styles */
+        .animated-logo {
+            display: inline-flex;
+            align-items: center;
+            animation: logoGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes logoGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px var(--auraquant-primary)); }
+            50% { filter: drop-shadow(0 0 20px var(--auraquant-secondary)); }
+        }
+        
+        .infinity-logo {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
+        }
+        
+        /* Multi-screen tabs */
+        .screen-tabs {
+            display: flex;
+            gap: 2px;
+            background: var(--auraquant-darker);
+            padding: 5px;
+            overflow-x: auto;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+        }
+        
+        .screen-tab {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .screen-tab:hover {
+            background: rgba(0, 255, 136, 0.1);
+            color: white;
+        }
+        
+        .screen-tab.active {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 204, 255, 0.2));
+            color: var(--auraquant-primary);
+            border-bottom: 2px solid var(--auraquant-primary);
+        }
+        
+        /* Screen Content Areas */
+        .screen-content {
+            display: none;
+            height: calc(100vh - 140px);
+            overflow: auto;
+        }
+        
+        .screen-content.active {
+            display: block;
+        }
+        
+        /* Login Screen Overlay */
+        #loginScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #0a0e1b 0%, #1a1e3b 50%, #0a0e1b 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        
+        .login-container {
+            background: rgba(10, 14, 27, 0.95);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 16px;
+            padding: 40px;
+            width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.2);
+        }
+        
+        /* Bot Status Panel */
+        .bot-status-panel {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            width: 300px;
+            background: rgba(10, 14, 27, 0.95);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            z-index: 1000;
+        }
+        
+        .bot-mode-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .infinity-mode {
+            color: var(--auraquant-gold);
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen">
+        <div class="login-container">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <!-- Animated Logo -->
+                <div class="animated-logo">
+                    <svg class="infinity-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="infinityGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1">
+                                    <animate attributeName="stop-color" values="#00ff88;#00ccff;#ff00ff;#00ff88" dur="3s" repeatCount="indefinite" />
+                                </stop>
+                                <stop offset="100%" style="stop-color:#00ccff;stop-opacity:1">
+                                    <animate attributeName="stop-color" values="#00ccff;#ff00ff;#00ff88;#00ccff" dur="3s" repeatCount="indefinite" />
+                                </stop>
+                            </linearGradient>
+                        </defs>
+                        <path d="M 25 50 Q 25 30, 50 50 T 75 50 Q 75 70, 50 50 T 25 50" 
+                              stroke="url(#infinityGradient)" 
+                              stroke-width="3" 
+                              fill="none"
+                              transform="rotate(0 50 50)">
+                            <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="10s" repeatCount="indefinite" />
+                        </path>
+                    </svg>
+                    <h1 style="margin: 0; color: white; font-size: 28px;">AuraQuant ∞</h1>
+                </div>
+                <p style="color: #888; margin-top: 10px;">Quantum Trading Platform v∞</p>
+            </div>
+            
+            <form id="loginForm">
+                <div style="margin-bottom: 20px;">
+                    <label style="color: #aaa; display: block; margin-bottom: 8px;">Username</label>
+                    <input type="text" id="username" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="color: #aaa; display: block; margin-bottom: 8px;">Password</label>
+                    <input type="password" id="password" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="color: #aaa; display: block; margin-bottom: 8px;">Trading Mode</label>
+                    <select id="tradingMode" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                        <option value="paper">Paper Trading</option>
+                        <option value="live">Live Trading</option>
+                    </select>
+                </div>
+                <button type="submit" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #00ff88, #00ccff); border: none; border-radius: 4px; color: #0a0e1b; font-weight: bold; cursor: pointer; font-size: 16px;">
+                    Login to Platform
+                </button>
+            </form>
+            
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="#" style="color: var(--auraquant-secondary); text-decoration: none; font-size: 14px;">Forgot Password?</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Platform (Hidden initially) -->
+    <div id="mainPlatform" style="display: none;">
+        <!-- Header with Logo and Controls -->
+        <header class="tv-header" style="background: var(--auraquant-darker); border-bottom: 1px solid rgba(0,255,136,0.2);">
+            <div class="animated-logo">
+                <svg class="infinity-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 25 50 Q 25 30, 50 50 T 75 50 Q 75 70, 50 50 T 25 50" 
+                          stroke="url(#infinityGradient)" 
+                          stroke-width="3" 
+                          fill="none"/>
+                </svg>
+                <span style="color: white; font-weight: bold; font-size: 18px;">AuraQuant ∞</span>
+            </div>
+            
+            <!-- Symbol Search -->
+            <div class="tv-symbol-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Symbol, eg. AAPL, BTC, PEPE" id="symbolSearch" value="AAPL">
+            </div>
+            
+            <!-- Timeframe Selector -->
+            <div class="tv-timeframe-selector">
+                <button class="tv-timeframe-btn">1s</button>
+                <button class="tv-timeframe-btn">5s</button>
+                <button class="tv-timeframe-btn">15s</button>
+                <button class="tv-timeframe-btn">1m</button>
+                <button class="tv-timeframe-btn">5m</button>
+                <button class="tv-timeframe-btn">15m</button>
+                <button class="tv-timeframe-btn">30m</button>
+                <button class="tv-timeframe-btn">1h</button>
+                <button class="tv-timeframe-btn active">1D</button>
+                <button class="tv-timeframe-btn">1W</button>
+                <button class="tv-timeframe-btn">1M</button>
+            </div>
+            
+            <!-- Account Info & Controls -->
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 20px;">
+                <!-- AWST Time Display -->
+                <div style="color: #aaa; font-size: 13px;">
+                    <i class="fas fa-clock"></i>
+                    <span id="awstTime">00:00:00 AWST</span>
+                </div>
+                
+                <!-- Trading Mode Indicator -->
+                <div id="tradingModeIndicator" style="padding: 5px 10px; background: rgba(255,170,0,0.2); border: 1px solid #ffaa00; border-radius: 4px; color: #ffaa00; font-size: 12px; font-weight: bold;">
+                    PAPER
+                </div>
+                
+                <!-- Balance Display -->
+                <div style="color: #aaa; font-size: 13px;">
+                    Balance: <span style="color: #00ff88; font-weight: bold;" id="balanceDisplay">$100,000</span>
+                </div>
+                
+                <!-- P&L Display -->
+                <div style="color: #aaa; font-size: 13px;">
+                    P&L: <span style="color: #00ff88; font-weight: bold;" id="pnlDisplay">+$0</span>
+                </div>
+                
+                <!-- Emergency Stop -->
+                <button id="emergencyStop" style="padding: 6px 12px; background: #ff0044; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer;">
+                    <i class="fas fa-stop"></i> EMERGENCY
+                </button>
+                
+                <!-- Settings -->
+                <button class="tv-tool-btn" onclick="openSettings()">
+                    <i class="fas fa-cog"></i>
+                </button>
+                
+                <!-- Logout -->
+                <button class="tv-tool-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Screen Navigation Tabs -->
+        <div class="screen-tabs">
+            <button class="screen-tab active" onclick="switchScreen('dashboard')">
+                <i class="fas fa-th-large"></i> Dashboard
+            </button>
+            <button class="screen-tab" onclick="switchScreen('trading')">
+                <i class="fas fa-chart-line"></i> Trading
+            </button>
+            <button class="screen-tab" onclick="switchScreen('multiTrade')">
+                <i class="fas fa-layer-group"></i> Multi-Trade
+            </button>
+            <button class="screen-tab" onclick="switchScreen('screener')">
+                <i class="fas fa-filter"></i> Screener
+            </button>
+            <button class="screen-tab" onclick="switchScreen('backtest')">
+                <i class="fas fa-history"></i> Backtest
+            </button>
+            <button class="screen-tab" onclick="switchScreen('botControl')">
+                <i class="fas fa-robot"></i> Bot Control
+            </button>
+            <button class="screen-tab" onclick="switchScreen('ai')">
+                <i class="fas fa-brain"></i> AI Center
+            </button>
+            <button class="screen-tab" onclick="switchScreen('brokers')">
+                <i class="fas fa-university"></i> Brokers
+            </button>
+            <button class="screen-tab" onclick="switchScreen('social')">
+                <i class="fas fa-share-alt"></i> Social
+            </button>
+            <button class="screen-tab" onclick="switchScreen('news')">
+                <i class="fas fa-newspaper"></i> News
+            </button>
+            <button class="screen-tab" onclick="switchScreen('calendar')">
+                <i class="fas fa-calendar"></i> Calendar
+            </button>
+            <button class="screen-tab" onclick="switchScreen('alerts')">
+                <i class="fas fa-bell"></i> Alerts
+            </button>
+            <button class="screen-tab" onclick="switchScreen('portfolio')">
+                <i class="fas fa-briefcase"></i> Portfolio
+            </button>
+            <button class="screen-tab" onclick="switchScreen('fxCalc')">
+                <i class="fas fa-calculator"></i> FX Calc
+            </button>
+            <button class="screen-tab" onclick="switchScreen('settings')">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+            <button class="screen-tab" onclick="switchScreen('help')">
+                <i class="fas fa-question-circle"></i> Help
+            </button>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Dashboard Screen -->
+            <div id="dashboardScreen" class="screen-content active">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 20px;">
+                    <!-- Portfolio Summary -->
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-wallet"></i> Portfolio Summary</h3>
+                        <div class="metric">
+                            <span>Total Value:</span>
+                            <span class="value" style="color: #00ff88;">$100,000</span>
+                        </div>
+                        <div class="metric">
+                            <span>Daily P&L:</span>
+                            <span class="value" style="color: #00ff88;">+$2,345 (+2.34%)</span>
+                        </div>
+                        <div class="metric">
+                            <span>Open Positions:</span>
+                            <span class="value">12</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Bot Performance -->
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-robot"></i> Bot Performance</h3>
+                        <div class="metric">
+                            <span>Active Mode:</span>
+                            <span class="value infinity-mode">V∞ Infinity</span>
+                        </div>
+                        <div class="metric">
+                            <span>Win Rate:</span>
+                            <span class="value" style="color: #00ff88;">92.5%</span>
+                        </div>
+                        <div class="metric">
+                            <span>Trades Today:</span>
+                            <span class="value">47</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Market Overview -->
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-globe"></i> Market Overview</h3>
+                        <div class="metric">
+                            <span>S&P 500:</span>
+                            <span class="value" style="color: #00ff88;">+1.2%</span>
+                        </div>
+                        <div class="metric">
+                            <span>BTC/USD:</span>
+                            <span class="value" style="color: #ff4444;">-0.8%</span>
+                        </div>
+                        <div class="metric">
+                            <span>ASX 200:</span>
+                            <span class="value" style="color: #00ff88;">+0.5%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Top Movers -->
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-fire"></i> Hot Stocks</h3>
+                        <div class="hot-stock">
+                            <span>TSLA</span>
+                            <span style="color: #00ff88;">+12.3%</span>
+                        </div>
+                        <div class="hot-stock">
+                            <span>PEPE</span>
+                            <span style="color: #00ff88;">+45.6%</span>
+                        </div>
+                        <div class="hot-stock">
+                            <span>GME</span>
+                            <span style="color: #00ff88;">+8.9%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trading Screen with TradingView Charts -->
+            <div id="tradingScreen" class="screen-content">
+                <div class="tv-main-container">
+                    <!-- Left Sidebar - Watchlist -->
+                    <aside class="tv-left-sidebar">
+                        <div class="tv-watchlist-header">
+                            <span>Watchlist</span>
+                            <button class="tv-tool-btn">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="tv-watchlist" id="watchlist">
+                            <!-- Dynamic watchlist items -->
+                        </div>
+                    </aside>
+                    
+                    <!-- Chart Container -->
+                    <div class="tv-chart-container">
+                        <!-- Chart Toolbar -->
+                        <div class="tv-chart-toolbar">
+                            <div class="tv-chart-tools">
+                                <button class="tv-tool-btn" title="Indicators">
+                                    <i class="fas fa-chart-area"></i> Indicators
+                                </button>
+                                <button class="tv-tool-btn" title="Strategies">
+                                    <i class="fas fa-robot"></i> Strategies
+                                </button>
+                                <button class="tv-tool-btn" title="Drawing Tools">
+                                    <i class="fas fa-pencil-alt"></i> Draw
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- TradingView Widget -->
+                        <div id="tv-chart" style="height: 500px;"></div>
+                        
+                        <!-- MACD Indicator -->
+                        <div id="macd-chart" style="height: 150px; border-top: 1px solid #333;"></div>
+                        
+                        <!-- Volume Chart -->
+                        <div id="volume-chart" style="height: 100px; border-top: 1px solid #333;"></div>
+                    </div>
+                    
+                    <!-- Right Sidebar - Trading Panel -->
+                    <aside class="tv-right-sidebar" style="width: 300px; background: var(--auraquant-darker); padding: 20px;">
+                        <h3 style="color: white; margin-bottom: 20px;">Trade Panel</h3>
+                        
+                        <!-- Order Type -->
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: #aaa; display: block; margin-bottom: 5px;">Order Type</label>
+                            <select style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                                <option>Market</option>
+                                <option>Limit</option>
+                                <option>Stop</option>
+                                <option>Stop Limit</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Quantity -->
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: #aaa; display: block; margin-bottom: 5px;">Quantity</label>
+                            <input type="number" value="100" style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                        </div>
+                        
+                        <!-- Buy/Sell Buttons -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                            <button style="padding: 12px; background: #00ff88; border: none; border-radius: 4px; color: #0a0e1b; font-weight: bold; cursor: pointer;">
+                                BUY
+                            </button>
+                            <button style="padding: 12px; background: #ff4444; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer;">
+                                SELL
+                            </button>
+                        </div>
+                        
+                        <!-- Floating RSI Panel -->
+                        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(0,255,136,0.3); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                            <h4 style="color: white; margin: 0 0 10px 0; font-size: 14px;">RSI (14)</h4>
+                            <div style="font-size: 24px; font-weight: bold; color: #ffaa00;">65.4</div>
+                            <div style="color: #aaa; font-size: 12px;">Overbought Zone</div>
+                        </div>
+                        
+                        <!-- Active Positions -->
+                        <div>
+                            <h4 style="color: white; margin-bottom: 10px;">Active Positions</h4>
+                            <div id="activePositions" style="max-height: 200px; overflow-y: auto;">
+                                <!-- Dynamic positions -->
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+            
+            <!-- Multi-Trade Screen -->
+            <div id="multiTradeScreen" class="screen-content">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; height: 100%; padding: 10px;">
+                    <!-- Chart 1 -->
+                    <div style="background: var(--auraquant-darker); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="color: white; font-weight: bold;">AAPL - 1D</span>
+                            <span style="color: #00ff88;">+2.34%</span>
+                        </div>
+                        <div id="multiChart1" style="height: calc(100% - 40px);"></div>
+                    </div>
+                    
+                    <!-- Chart 2 -->
+                    <div style="background: var(--auraquant-darker); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="color: white; font-weight: bold;">BTC/USD - 1H</span>
+                            <span style="color: #ff4444;">-1.23%</span>
+                        </div>
+                        <div id="multiChart2" style="height: calc(100% - 40px);"></div>
+                    </div>
+                    
+                    <!-- Chart 3 -->
+                    <div style="background: var(--auraquant-darker); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="color: white; font-weight: bold;">TSLA - 5M</span>
+                            <span style="color: #00ff88;">+5.67%</span>
+                        </div>
+                        <div id="multiChart3" style="height: calc(100% - 40px);"></div>
+                    </div>
+                    
+                    <!-- Chart 4 -->
+                    <div style="background: var(--auraquant-darker); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="color: white; font-weight: bold;">EUR/USD - 15M</span>
+                            <span style="color: #00ff88;">+0.12%</span>
+                        </div>
+                        <div id="multiChart4" style="height: calc(100% - 40px);"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Screener Screen -->
+            <div id="screenerScreen" class="screen-content">
+                <div style="padding: 20px;">
+                    <h2 style="color: white; margin-bottom: 20px;">Warrior Trading Style Screener</h2>
+                    
+                    <!-- Screener Controls -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <select id="screenerType" style="padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                            <option>Gap Scanner</option>
+                            <option>Momentum Scanner</option>
+                            <option>Volume Surge</option>
+                            <option>Breakout Scanner</option>
+                            <option>Reversal Scanner</option>
+                            <option>Hot Penny Stocks</option>
+                            <option>Crypto Movers</option>
+                        </select>
+                        <button onclick="runScreener()" style="padding: 8px 20px; background: #00ff88; border: none; border-radius: 4px; color: #0a0e1b; font-weight: bold; cursor: pointer;">
+                            Run Scanner
+                        </button>
+                        <button onclick="saveScreener()" style="padding: 8px 20px; background: rgba(0,204,255,0.2); border: 1px solid #00ccff; border-radius: 4px; color: #00ccff; font-weight: bold; cursor: pointer;">
+                            Save Results
+                        </button>
+                    </div>
+                    
+                    <!-- Screener Results Table -->
+                    <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; overflow: hidden;">
+                        <table style="width: 100%; color: white;">
+                            <thead style="background: rgba(0,255,136,0.1);">
+                                <tr>
+                                    <th style="padding: 10px; text-align: left;">Symbol</th>
+                                    <th style="padding: 10px; text-align: left;">Price</th>
+                                    <th style="padding: 10px; text-align: left;">Change %</th>
+                                    <th style="padding: 10px; text-align: left;">Volume</th>
+                                    <th style="padding: 10px; text-align: left;">Float</th>
+                                    <th style="padding: 10px; text-align: left;">ATR</th>
+                                    <th style="padding: 10px; text-align: left;">Signal</th>
+                                    <th style="padding: 10px; text-align: left;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="screenerResults">
+                                <!-- Dynamic results -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Backtest Screen -->
+            <div id="backtestScreen" class="screen-content">
+                <div style="padding: 20px;">
+                    <h2 style="color: white; margin-bottom: 20px;">Strategy Backtesting</h2>
+                    
+                    <div style="display: grid; grid-template-columns: 300px 1fr; gap: 20px;">
+                        <!-- Backtest Settings -->
+                        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: white; margin-bottom: 15px;">Settings</h3>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <label style="color: #aaa; display: block; margin-bottom: 5px;">Strategy</label>
+                                <select style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                                    <option>Quantum Infinity V∞</option>
+                                    <option>Momentum Breakout</option>
+                                    <option>Mean Reversion</option>
+                                    <option>MACD Crossover</option>
+                                    <option>RSI Divergence</option>
+                                </select>
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <label style="color: #aaa; display: block; margin-bottom: 5px;">Symbol</label>
+                                <input type="text" value="AAPL" style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <label style="color: #aaa; display: block; margin-bottom: 5px;">Period</label>
+                                <select style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                                    <option>1 Month</option>
+                                    <option>3 Months</option>
+                                    <option>6 Months</option>
+                                    <option>1 Year</option>
+                                    <option>2 Years</option>
+                                </select>
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <label style="color: #aaa; display: block; margin-bottom: 5px;">Initial Capital</label>
+                                <input type="number" value="10000" style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                            </div>
+                            
+                            <button onclick="runBacktest()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #00ff88, #00ccff); border: none; border-radius: 4px; color: #0a0e1b; font-weight: bold; cursor: pointer;">
+                                Run Backtest
+                            </button>
+                        </div>
+                        
+                        <!-- Backtest Results -->
+                        <div>
+                            <!-- Performance Metrics -->
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px;">
+                                <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 15px;">
+                                    <div style="color: #aaa; font-size: 12px;">Total Return</div>
+                                    <div style="color: #00ff88; font-size: 24px; font-weight: bold;">+156.7%</div>
+                                </div>
+                                <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 15px;">
+                                    <div style="color: #aaa; font-size: 12px;">Win Rate</div>
+                                    <div style="color: #00ff88; font-size: 24px; font-weight: bold;">68.5%</div>
+                                </div>
+                                <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 15px;">
+                                    <div style="color: #aaa; font-size: 12px;">Sharpe Ratio</div>
+                                    <div style="color: #00ccff; font-size: 24px; font-weight: bold;">2.34</div>
+                                </div>
+                                <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 15px;">
+                                    <div style="color: #aaa; font-size: 12px;">Max Drawdown</div>
+                                    <div style="color: #ff4444; font-size: 24px; font-weight: bold;">-12.3%</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Equity Curve -->
+                            <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                                <h3 style="color: white; margin-bottom: 15px;">Equity Curve</h3>
+                                <canvas id="equityCurve" style="width: 100%; height: 300px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bot Control Screen -->
+            <div id="botControlScreen" class="screen-content">
+                <div style="padding: 20px;">
+                    <h2 style="color: white; margin-bottom: 20px;">Infinity Bot Control Center</h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <!-- Bot Mode Selection -->
+                        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: white; margin-bottom: 15px;">Bot Mode</h3>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                                <button class="bot-mode-btn" onclick="setBotMode('V1')">V1 Basic</button>
+                                <button class="bot-mode-btn" onclick="setBotMode('V2')">V2 Advanced</button>
+                                <button class="bot-mode-btn" onclick="setBotMode('V3')">V3 Pro</button>
+                                <button class="bot-mode-btn" onclick="setBotMode('V4')">V4 Expert</button>
+                                <button class="bot-mode-btn" onclick="setBotMode('V5')">V5 Master</button>
+                                <button class="bot-mode-btn infinity-mode" onclick="setBotMode('V∞')">V∞ Infinity</button>
+                            </div>
+                            
+                            <div style="margin-top: 20px;">
+                                <h4 style="color: white; margin-bottom: 10px;">Manual Override</h4>
+                                <div style="display: flex; gap: 10px;">
+                                    <button style="flex: 1; padding: 10px; background: #00ff88; border: none; border-radius: 4px; color: #0a0e1b; font-weight: bold; cursor: pointer;">
+                                        Start Bot
+                                    </button>
+                                    <button style="flex: 1; padding: 10px; background: #ff4444; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer;">
+                                        Stop Bot
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bot Statistics -->
+                        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: white; margin-bottom: 15px;">Performance Stats</h3>
+                            
+                            <div class="bot-stats">
+                                <div style="margin-bottom: 10px;">
+                                    <span style="color: #aaa;">Trades Today:</span>
+                                    <span style="color: white; float: right;">234</span>
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <span style="color: #aaa;">Win Rate:</span>
+                                    <span style="color: #00ff88; float: right;">89.7%</span>
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <span style="color: #aaa;">Profit Today:</span>
+                                    <span style="color: #00ff88; float: right;">+$12,456</span>
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <span style="color: #aaa;">Active Positions:</span>
+                                    <span style="color: white; float: right;">8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Center Screen -->
+            <div id="aiScreen" class="screen-content">
+                <div style="padding: 20px;">
+                    <h2 style="color: white; margin-bottom: 20px;">AI Trading Assistant</h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <!-- ChatGPT Integration -->
+                        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: white; margin-bottom: 15px;">ChatGPT Analysis</h3>
+                            <div id="chatgptTerminal" style="height: 300px; background: #000; padding: 10px; overflow-y: auto; font-family: monospace; color: #00ff88;">
+                                > Analyzing market conditions...<br>
+                                > Current sentiment: BULLISH<br>
+                                > Recommended trades: AAPL, TSLA, BTC<br>
+                            </div>
+                            <input type="text" placeholder="Ask ChatGPT..." style="width: 100%; margin-top: 10px; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                        </div>
+                        
+                        <!-- Claude Integration -->
+                        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: white; margin-bottom: 15px;">Claude Analysis</h3>
+                            <div id="claudeTerminal" style="height: 300px; background: #000; padding: 10px; overflow-y: auto; font-family: monospace; color: #00ccff;">
+                                > Technical analysis complete<br>
+                                > RSI: Oversold conditions detected<br>
+                                > MACD: Bullish crossover imminent<br>
+                            </div>
+                            <input type="text" placeholder="Ask Claude..." style="width: 100%; margin-top: 10px; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                        </div>
+                    </div>
+                    
+                    <!-- DeepSeek Integration -->
+                    <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px; margin-top: 20px;">
+                        <h3 style="color: white; margin-bottom: 15px;">DeepSeek Market Intelligence</h3>
+                        <div id="deepseekAnalysis" style="background: #000; padding: 15px; border-radius: 4px; color: #ffaa00; font-family: monospace;">
+                            > Deep market analysis in progress...<br>
+                            > Quantum patterns detected in TSLA<br>
+                            > Probability of breakout: 87.3%<br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Brokers Screen -->
+            <div id="brokersScreen" class="screen-content">
+                <div style="padding: 20px;">
+                    <h2 style="color: white; margin-bottom: 20px;">Broker Connections</h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <!-- NAB Bank -->
+                        <div class="broker-card" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: white;">NAB Bank</h3>
+                            <div style="color: #00ff88; margin: 10px 0;">● Connected</div>
+                            <button onclick="openNABPanel()" style="width: 100%; padding: 8px; background: rgba(0,255,136,0.2); border: 1px solid #00ff88; border-radius: 4px; color: #00ff88; cursor: pointer;">
+                                Open Trading
+                            </button>
+                        </div>
+                        
+                        <!-- Alpaca -->
+                        <div class="broker-card" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: white;">Alpaca</h3>
+                            <div style="color: #00ff88; margin: 10px 0;">● Connected</div>
+                            <button style="width: 100%; padding: 8px; background: rgba(0,255,136,0.2); border: 1px solid #00ff88; border-radius: 4px; color: #00ff88; cursor: pointer;">
+                                Manage Account
+                            </button>
+                        </div>
+                        
+                        <!-- Binance -->
+                        <div class="broker-card" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: white;">Binance</h3>
+                            <div style="color: #00ff88; margin: 10px 0;">● Connected</div>
+                            <button style="width: 100%; padding: 8px; background: rgba(0,255,136,0.2); border: 1px solid #00ff88; border-radius: 4px; color: #00ff88; cursor: pointer;">
+                                Crypto Trading
+                            </button>
+                        </div>
+                        
+                        <!-- Interactive Brokers -->
+                        <div class="broker-card" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: white;">Interactive Brokers</h3>
+                            <div style="color: #ffaa00; margin: 10px 0;">● Pending</div>
+                            <button style="width: 100%; padding: 8px; background: rgba(255,170,0,0.2); border: 1px solid #ffaa00; border-radius: 4px; color: #ffaa00; cursor: pointer;">
+                                Connect
+                            </button>
+                        </div>
+                        
+                        <!-- Plus500 -->
+                        <div class="broker-card" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: white;">Plus500</h3>
+                            <div style="color: #00ff88; margin: 10px 0;">● Manual Mode</div>
+                            <button onclick="openPlus500Panel()" style="width: 100%; padding: 8px; background: rgba(0,255,136,0.2); border: 1px solid #00ff88; border-radius: 4px; color: #00ff88; cursor: pointer;">
+                                Manual Trading
+                            </button>
+                        </div>
+                        
+                        <!-- Coinbase -->
+                        <div class="broker-card" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: white;">Coinbase</h3>
+                            <div style="color: #ff4444; margin: 10px 0;">● Disconnected</div>
+                            <button style="width: 100%; padding: 8px; background: rgba(255,68,68,0.2); border: 1px solid #ff4444; border-radius: 4px; color: #ff4444; cursor: pointer;">
+                                Connect
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Hub Screen -->
+            <div id="socialScreen" class="screen-content">
+                <div style="padding: 20px;">
+                    <h2 style="color: white; margin-bottom: 20px;">Social Trading Hub</h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <!-- Discord Integration -->
+                        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: #5865F2;"><i class="fab fa-discord"></i> Discord</h3>
+                            <div style="margin: 15px 0;">
+                                <input type="text" placeholder="Message to send..." style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                            </div>
+                            <button style="width: 100%; padding: 8px; background: #5865F2; border: none; border-radius: 4px; color: white; cursor: pointer;">
+                                Broadcast Trade Alert
+                            </button>
+                        </div>
+                        
+                        <!-- Telegram Integration -->
+                        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px;">
+                            <h3 style="color: #0088cc;"><i class="fab fa-telegram"></i> Telegram</h3>
+                            <div style="margin: 15px 0;">
+                                <input type="text" placeholder="Alert message..." style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                            </div>
+                            <button style="width: 100%; padding: 8px; background: #0088cc; border: none; border-radius: 4px; color: white; cursor: pointer;">
+                                Send Alert
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Twitter Integration -->
+                    <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 20px; margin-top: 20px;">
+                        <h3 style="color: #1DA1F2;"><i class="fab fa-twitter"></i> Twitter</h3>
+                        <textarea placeholder="Share your trading insights..." style="width: 100%; height: 100px; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white; margin: 15px 0;"></textarea>
+                        <button style="padding: 8px 20px; background: #1DA1F2; border: none; border-radius: 4px; color: white; cursor: pointer;">
+                            Tweet
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FX Calculator Screen -->
+            <div id="fxCalcScreen" class="screen-content">
+                <div style="padding: 20px;">
+                    <h2 style="color: white; margin-bottom: 20px;">FX Calculator</h2>
+                    
+                    <div style="max-width: 600px; margin: 0 auto;">
+                        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 30px;">
+                            <div style="margin-bottom: 20px;">
+                                <label style="color: #aaa; display: block; margin-bottom: 8px;">Amount</label>
+                                <input type="number" id="fxAmount" value="1000" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white; font-size: 18px;">
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; margin-bottom: 20px;">
+                                <div>
+                                    <label style="color: #aaa; display: block; margin-bottom: 8px;">From</label>
+                                    <select id="fxFrom" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                                        <option>USD</option>
+                                        <option>EUR</option>
+                                        <option>GBP</option>
+                                        <option>AUD</option>
+                                        <option>JPY</option>
+                                        <option>CAD</option>
+                                    </select>
+                                </div>
+                                
+                                <div style="padding-top: 20px;">
+                                    <i class="fas fa-exchange-alt" style="color: #00ff88; font-size: 20px;"></i>
+                                </div>
+                                
+                                <div>
+                                    <label style="color: #aaa; display: block; margin-bottom: 8px;">To</label>
+                                    <select id="fxTo" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 4px; color: white;">
+                                        <option>AUD</option>
+                                        <option>USD</option>
+                                        <option>EUR</option>
+                                        <option>GBP</option>
+                                        <option>JPY</option>
+                                        <option>CAD</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button onclick="calculateFX()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #00ff88, #00ccff); border: none; border-radius: 4px; color: #0a0e1b; font-weight: bold; cursor: pointer; font-size: 16px;">
+                                Calculate
+                            </button>
+                            
+                            <div style="margin-top: 20px; padding: 20px; background: rgba(0,255,136,0.1); border-radius: 4px; text-align: center;">
+                                <div style="color: #aaa; font-size: 14px;">Result</div>
+                                <div id="fxResult" style="color: #00ff88; font-size: 32px; font-weight: bold; margin-top: 10px;">
+                                    1,547.23 AUD
+                                </div>
+                                <div style="color: #aaa; font-size: 12px; margin-top: 5px;">
+                                    Rate: 1 USD = 1.5472 AUD
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Help Screen -->
+            <div id="helpScreen" class="screen-content">
+                <iframe src="help.html" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bot Status Panel (Floating) -->
+    <div class="bot-status-panel" id="botStatusPanel" style="display: none;">
+        <h4 style="color: white; margin: 0 0 15px 0;">Bot Status</h4>
+        
+        <div class="bot-mode-indicator">
+            <span>Mode:</span>
+            <span class="infinity-mode">V∞ Infinity</span>
+        </div>
+        
+        <div style="margin: 10px 0; padding: 10px; background: rgba(0,255,136,0.1); border-radius: 4px;">
+            <div style="color: #aaa; font-size: 12px;">Target</div>
+            <div style="color: white; font-weight: bold;">$1,000,000</div>
+            <div style="color: #00ff88; font-size: 11px;">By 2028</div>
+        </div>
+        
+        <div style="margin: 10px 0;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span style="color: #aaa; font-size: 12px;">Progress</span>
+                <span style="color: white; font-size: 12px;">12.5%</span>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+                <div style="width: 12.5%; height: 100%; background: linear-gradient(90deg, #00ff88, #00ccff);"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript Modules -->
+    <script src="js/config.js"></script>
+    <script src="js/module-stubs.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/init.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/websocket.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/trading.js"></script>
+    <script src="js/screener.js"></script>
+    <script src="js/backtest.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/social.js"></script>
+    <script src="js/emergency.js"></script>
+    <script src="js/fx-calculator.js"></script>
+    <script src="js/timezone.js"></script>
+    <script src="js/plus500-integration.js"></script>
+    <script src="js/nab-integration.js"></script>
+    <script src="js/warriorScreener.js"></script>
+    <script src="js/honeypot.js"></script>
+    <script src="js/audio-alerts.js"></script>
+    
+    <script>
+        // Initialize platform
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle login
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const mode = document.getElementById('tradingMode').value;
+                
+                // Simple validation (in production, this would verify with backend)
+                if (username && password) {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('mainPlatform').style.display = 'block';
+                    document.getElementById('botStatusPanel').style.display = 'block';
+                    
+                    // Set trading mode indicator
+                    const indicator = document.getElementById('tradingModeIndicator');
+                    if (mode === 'live') {
+                        indicator.textContent = 'LIVE';
+                        indicator.style.background = 'rgba(255,68,68,0.2)';
+                        indicator.style.borderColor = '#ff4444';
+                        indicator.style.color = '#ff4444';
+                    }
+                    
+                    // Initialize TradingView chart
+                    initializeTradingViewChart();
+                    
+                    // Start time updates
+                    updateAWSTTime();
+                    setInterval(updateAWSTTime, 1000);
+                    
+                    // Initialize multi-charts
+                    initializeMultiCharts();
+                }
+            });
+            
+            // Emergency stop button
+            document.getElementById('emergencyStop').addEventListener('click', function() {
+                if (confirm('EMERGENCY STOP - This will close all positions and halt trading. Continue?')) {
+                    alert('Emergency stop activated! All positions closed.');
+                    // In production, this would trigger actual emergency procedures
+                }
+            });
+        });
+        
+        // Screen switching
+        function switchScreen(screenName) {
+            // Hide all screens
+            document.querySelectorAll('.screen-content').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.screen-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected screen
+            document.getElementById(screenName + 'Screen').classList.add('active');
+            
+            // Set active tab
+            event.target.closest('.screen-tab').classList.add('active');
+        }
+        
+        // Update AWST time
+        function updateAWSTTime() {
+            const now = new Date();
+            // Convert to AWST (UTC+8)
+            const awstOffset = 8 * 60; // minutes
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const awst = new Date(utc + (awstOffset * 60000));
+            
+            const timeStr = awst.toTimeString().split(' ')[0];
+            document.getElementById('awstTime').textContent = timeStr + ' AWST';
+        }
+        
+        // Initialize TradingView Chart
+        function initializeTradingViewChart() {
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": "NASDAQ:AAPL",
+                "interval": "D",
+                "timezone": "Australia/Perth",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "allow_symbol_change": true,
+                "container_id": "tv-chart",
+                "studies": [
+                    "MASimple@tv-basicstudies",
+                    "RSI@tv-basicstudies",
+                    "MACD@tv-basicstudies"
+                ]
+            });
+        }
+        
+        // Initialize multi-charts
+        function initializeMultiCharts() {
+            // Initialize 4 lightweight charts for multi-trade view
+            // This would be expanded with actual chart initialization
+        }
+        
+        // Placeholder functions
+        function runScreener() {
+            alert('Running screener...');
+        }
+        
+        function saveScreener() {
+            alert('Saving screener results...');
+        }
+        
+        function runBacktest() {
+            alert('Running backtest...');
+        }
+        
+        function setBotMode(mode) {
+            alert('Bot mode set to: ' + mode);
+        }
+        
+        function calculateFX() {
+            // Simple FX calculation
+            const amount = document.getElementById('fxAmount').value;
+            const from = document.getElementById('fxFrom').value;
+            const to = document.getElementById('fxTo').value;
+            
+            // Mock calculation
+            const rate = 1.5472;
+            const result = amount * rate;
+            
+            document.getElementById('fxResult').textContent = result.toFixed(2) + ' ' + to;
+        }
+        
+        function openNABPanel() {
+            alert('Opening NAB trading panel...');
+        }
+        
+        function openPlus500Panel() {
+            alert('Opening Plus500 manual trading panel...');
+        }
+        
+        function openSettings() {
+            alert('Opening settings...');
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>

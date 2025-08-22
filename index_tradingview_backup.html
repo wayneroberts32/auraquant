@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraQuant ∞ - TradingView Premium</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/tradingview-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- TradingView Lightweight Charts -->
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    
+    <!-- TradingView Widget -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+</head>
+<body>
+    <!-- TradingView Style Header -->
+    <header class="tv-header">
+        <div class="tv-logo">
+            <i class="fas fa-infinity"></i>
+            <span style="margin-left: 8px;">AuraQuant</span>
+        </div>
+        
+        <!-- Symbol Search -->
+        <div class="tv-symbol-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Symbol, eg. AAPL" id="symbolSearch" value="AAPL">
+        </div>
+        
+        <!-- Timeframe Selector -->
+        <div class="tv-timeframe-selector">
+            <button class="tv-timeframe-btn">1s</button>
+            <button class="tv-timeframe-btn">5s</button>
+            <button class="tv-timeframe-btn">15s</button>
+            <button class="tv-timeframe-btn">30s</button>
+            <button class="tv-timeframe-btn">1m</button>
+            <button class="tv-timeframe-btn">3m</button>
+            <button class="tv-timeframe-btn">5m</button>
+            <button class="tv-timeframe-btn">15m</button>
+            <button class="tv-timeframe-btn">30m</button>
+            <button class="tv-timeframe-btn">1h</button>
+            <button class="tv-timeframe-btn">2h</button>
+            <button class="tv-timeframe-btn">4h</button>
+            <button class="tv-timeframe-btn active">1D</button>
+            <button class="tv-timeframe-btn">1W</button>
+            <button class="tv-timeframe-btn">1M</button>
+        </div>
+        
+        <!-- Chart Type -->
+        <div class="tv-chart-tools">
+            <button class="tv-tool-btn" title="Chart Type">
+                <i class="fas fa-chart-line"></i>
+            </button>
+            <button class="tv-tool-btn" id="indicatorsBtn" title="Indicators">
+                <i class="fas fa-chart-area"></i>
+                <span>Indicators</span>
+            </button>
+            <button class="tv-tool-btn" title="Strategies">
+                <i class="fas fa-robot"></i>
+                <span>Strategies</span>
+            </button>
+            <button class="tv-tool-btn" title="Alerts">
+                <i class="fas fa-bell"></i>
+                <span>Alerts</span>
+            </button>
+            <button class="tv-tool-btn" title="Templates">
+                <i class="fas fa-layer-group"></i>
+            </button>
+        </div>
+        
+        <!-- Account Info -->
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 16px;">
+            <span style="color: var(--tv-color-text-secondary); font-size: 13px;">
+                Balance: <span style="color: var(--tv-color-success); font-weight: 600;">$100,000</span>
+            </span>
+            <span style="color: var(--tv-color-text-secondary); font-size: 13px;">
+                P&L: <span style="color: var(--tv-color-success); font-weight: 600;">+$2,345</span>
+            </span>
+            <button class="tv-tool-btn">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Main Container -->
+    <div class="tv-main-container">
+        <!-- Left Sidebar - Watchlist -->
+        <aside class="tv-left-sidebar">
+            <div class="tv-watchlist-header">
+                <span>Watchlist</span>
+                <button class="tv-tool-btn">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="tv-watchlist" id="watchlist">
+                <!-- Watchlist items will be populated here -->
+                <div class="tv-watchlist-item">
+                    <div>
+                        <div class="tv-watchlist-symbol">AAPL</div>
+                        <div style="font-size: 11px; color: var(--tv-color-text-secondary);">Apple Inc</div>
+                    </div>
+                    <div class="tv-watchlist-price">
+                        <div class="tv-price-value">178.45</div>
+                        <div class="tv-price-change positive">+2.34%</div>
+                    </div>
+                </div>
+                <div class="tv-watchlist-item">
+                    <div>
+                        <div class="tv-watchlist-symbol">TSLA</div>
+                        <div style="font-size: 11px; color: var(--tv-color-text-secondary);">Tesla Inc</div>
+                    </div>
+                    <div class="tv-watchlist-price">
+                        <div class="tv-price-value">245.67</div>
+                        <div class="tv-price-change positive">+5.12%</div>
+                    </div>
+                </div>
+                <div class="tv-watchlist-item">
+                    <div>
+                        <div class="tv-watchlist-symbol">BTC/USD</div>
+                        <div style="font-size: 11px; color: var(--tv-color-text-secondary);">Bitcoin</div>
+                    </div>
+                    <div class="tv-watchlist-price">
+                        <div class="tv-price-value">42,345</div>
+                        <div class="tv-price-change negative">-1.23%</div>
+                    </div>
+                </div>
+                <div class="tv-watchlist-item">
+                    <div>
+                        <div class="tv-watchlist-symbol">ETH/USD</div>
+                        <div style="font-size: 11px; color: var(--tv-color-text-secondary);">Ethereum</div>
+                    </div>
+                    <div class="tv-watchlist-price">
+                        <div class="tv-price-value">2,234</div>
+                        <div class="tv-price-change positive">+3.45%</div>
+                    </div>
+                </div>
+                <div class="tv-watchlist-item">
+                    <div>
+                        <div class="tv-watchlist-symbol">GOOGL</div>
+                        <div style="font-size: 11px; color: var(--tv-color-text-secondary);">Alphabet Inc</div>
+                    </div>
+                    <div class="tv-watchlist-price">
+                        <div class="tv-price-value">142.78</div>
+                        <div class="tv-price-change positive">+1.89%</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Chart Container -->
+        <div class="tv-chart-container">
+            <!-- Chart Toolbar -->
+            <div class="tv-chart-toolbar">
+                <div class="tv-chart-tools">
+                    <button class="tv-tool-btn" title="Crosshair">
+                        <i class="fas fa-crosshairs"></i>
+                    </button>
+                    <button class="tv-tool-btn" title="Trend Line">
+                        <i class="fas fa-slash"></i>
+                    </button>
+                    <button class="tv-tool-btn" title="Horizontal Line">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button class="tv-tool-btn" title="Fibonacci">
+                        <i class="fas fa-wave-square"></i>
+                    </button>
+                    <button class="tv-tool-btn" title="Rectangle">
+                        <i class="fas fa-square"></i>
+                    </button>
+                    <button class="tv-tool-btn" title="Text">
+                        <i class="fas fa-font"></i>
+                    </button>
+                    <button class="tv-tool-btn" title="Measure">
+                        <i class="fas fa-ruler"></i>
+                    </button>
+                    <button class="tv-tool-btn" title="Zoom In">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="tv-tool-btn" title="Zoom Out">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                </div>
+                
+                <div style="margin-left: auto;">
+                    <button class="tv-tool-btn" title="Screenshot">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <button class="tv-tool-btn" title="Fullscreen">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Main Chart Area -->
+            <div class="tv-chart-area">
+                <!-- TradingView Widget Container -->
+                <div id="tv-chart"></div>
+                
+                <!-- Indicators Panel (Hidden by default) -->
+                <div class="tv-indicators-panel" id="indicatorsPanel">
+                    <h3 style="margin-bottom: 12px;">Indicators</h3>
+                    <input type="text" class="tv-indicators-search" placeholder="Search indicators...">
+                    <div class="tv-indicators-list">
+                        <div class="tv-indicator-item">Moving Average (MA)</div>
+                        <div class="tv-indicator-item">Exponential Moving Average (EMA)</div>
+                        <div class="tv-indicator-item">Relative Strength Index (RSI)</div>
+                        <div class="tv-indicator-item">MACD</div>
+                        <div class="tv-indicator-item">Bollinger Bands</div>
+                        <div class="tv-indicator-item">Stochastic</div>
+                        <div class="tv-indicator-item">Volume</div>
+                        <div class="tv-indicator-item">ATR</div>
+                        <div class="tv-indicator-item">Ichimoku Cloud</div>
+                        <div class="tv-indicator-item">Fibonacci Retracement</div>
+                        <div class="tv-indicator-item">Pivot Points</div>
+                        <div class="tv-indicator-item">VWAP</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Panel -->
+            <div class="tv-bottom-panel">
+                <div class="tv-bottom-tabs">
+                    <button class="tv-bottom-tab active" data-panel="positions">Positions</button>
+                    <button class="tv-bottom-tab" data-panel="orders">Orders</button>
+                    <button class="tv-bottom-tab" data-panel="history">History</button>
+                    <button class="tv-bottom-tab" data-panel="alerts">Alerts</button>
+                    <button class="tv-bottom-tab" data-panel="news">News</button>
+                    <button class="tv-bottom-tab" data-panel="calendar">Calendar</button>
+                    <button class="tv-bottom-tab" data-panel="screener">Screener</button>
+                    <button class="tv-bottom-tab" data-panel="strategy">Strategy Tester</button>
+                </div>
+                <div class="tv-bottom-content">
+                    <!-- Positions Panel -->
+                    <div id="positions-panel" class="tv-panel-content">
+                        <table class="tv-positions-table">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Side</th>
+                                    <th>Qty</th>
+                                    <th>Avg Price</th>
+                                    <th>Last Price</th>
+                                    <th>P&L</th>
+                                    <th>P&L %</th>
+                                    <th>Value</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="positionsTable">
+                                <tr>
+                                    <td>AAPL</td>
+                                    <td style="color: var(--tv-color-success);">Long</td>
+                                    <td>100</td>
+                                    <td>175.50</td>
+                                    <td>178.45</td>
+                                    <td style="color: var(--tv-color-success);">+$295</td>
+                                    <td style="color: var(--tv-color-success);">+1.68%</td>
+                                    <td>$17,845</td>
+                                    <td>
+                                        <button style="padding: 4px 8px; background: var(--tv-color-danger); color: white; border: none; border-radius: 4px; cursor: pointer;">Close</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- News Panel -->
+                    <div id="news-panel" class="tv-news-panel">
+                        <!-- News items will be populated here -->
+                    </div>
+                    
+                    <!-- Screener Panel -->
+                    <div id="screener-panel" class="tv-screener-panel">
+                        <div class="tv-screener-filters">
+                            <div class="tv-screener-filter">
+                                <label>Volume > </label>
+                                <input type="number" value="1000000" style="width: 100px;">
+                            </div>
+                            <div class="tv-screener-filter">
+                                <label>Price Change > </label>
+                                <input type="number" value="5" style="width: 60px;">
+                                <span>%</span>
+                            </div>
+                        </div>
+                        <div class="tv-screener-results" id="screenerResults"></div>
+                    </div>
+                    
+                    <!-- Strategy Panel -->
+                    <div id="strategy-panel" class="tv-strategy-panel">
+                        <div>
+                            <h4>Strategy Performance</h4>
+                            <div class="tv-strategy-results">
+                                <div class="tv-strategy-stat">
+                                    <div class="tv-strategy-stat-label">Net Profit</div>
+                                    <div class="tv-strategy-stat-value" style="color: var(--tv-color-success);">$12,345</div>
+                                </div>
+                                <div class="tv-strategy-stat">
+                                    <div class="tv-strategy-stat-label">Win Rate</div>
+                                    <div class="tv-strategy-stat-value">67.8%</div>
+                                </div>
+                                <div class="tv-strategy-stat">
+                                    <div class="tv-strategy-stat-label">Profit Factor</div>
+                                    <div class="tv-strategy-stat-value">2.34</div>
+                                </div>
+                                <div class="tv-strategy-stat">
+                                    <div class="tv-strategy-stat-label">Max Drawdown</div>
+                                    <div class="tv-strategy-stat-value" style="color: var(--tv-color-danger);">-8.5%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Sidebar -->
+        <aside class="tv-right-sidebar">
+            <div class="tv-right-tabs">
+                <button class="tv-right-tab active" data-tab="trade">Trade</button>
+                <button class="tv-right-tab" data-tab="details">Details</button>
+                <button class="tv-right-tab" data-tab="depth">Depth</button>
+                <button class="tv-right-tab" data-tab="bot">Bot</button>
+            </div>
+            
+            <!-- Order Panel -->
+            <div class="tv-order-panel" id="trade-tab">
+                <div class="tv-order-type-selector">
+                    <button class="tv-order-type-btn active">Market</button>
+                    <button class="tv-order-type-btn">Limit</button>
+                    <button class="tv-order-type-btn">Stop</button>
+                </div>
+                
+                <form class="tv-order-form">
+                    <div class="tv-form-group">
+                        <label class="tv-form-label">Quantity</label>
+                        <input type="number" class="tv-form-input" value="100">
+                    </div>
+                    
+                    <div class="tv-form-group" id="limitPriceGroup" style="display: none;">
+                        <label class="tv-form-label">Limit Price</label>
+                        <input type="number" class="tv-form-input" step="0.01">
+                    </div>
+                    
+                    <div class="tv-form-group" id="stopPriceGroup" style="display: none;">
+                        <label class="tv-form-label">Stop Price</label>
+                        <input type="number" class="tv-form-input" step="0.01">
+                    </div>
+                    
+                    <div class="tv-form-group">
+                        <label class="tv-form-label">Take Profit</label>
+                        <input type="number" class="tv-form-input" placeholder="Optional">
+                    </div>
+                    
+                    <div class="tv-form-group">
+                        <label class="tv-form-label">Stop Loss</label>
+                        <input type="number" class="tv-form-input" placeholder="Optional">
+                    </div>
+                    
+                    <div class="tv-order-buttons">
+                        <button type="button" class="tv-btn-buy">BUY</button>
+                        <button type="button" class="tv-btn-sell">SELL</button>
+                    </div>
+                </form>
+                
+                <!-- Bot Controls -->
+                <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--tv-color-border);">
+                    <h4 style="margin-bottom: 12px;">Bot Trading</h4>
+                    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                        <button style="flex: 1; padding: 8px; background: var(--tv-color-success); color: white; border: none; border-radius: 4px;">
+                            Start Bot
+                        </button>
+                        <button style="flex: 1; padding: 8px; background: var(--tv-color-danger); color: white; border: none; border-radius: 4px;">
+                            Stop Bot
+                        </button>
+                    </div>
+                    <select style="width: 100%; padding: 8px; background: var(--tv-color-input-bg); border: 1px solid var(--tv-color-border); color: var(--tv-color-text); border-radius: 4px;">
+                        <option>Bot V1 - Conservative</option>
+                        <option>Bot V2 - Balanced</option>
+                        <option>Bot V3 - Growth</option>
+                        <option>Bot V4 - Aggressive</option>
+                        <option selected>Bot V5 - Advanced</option>
+                        <option>Bot V∞ - Infinity Mode</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Details Tab -->
+            <div id="details-tab" style="display: none; padding: 16px;">
+                <h4>AAPL - Apple Inc</h4>
+                <div style="margin-top: 12px;">
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                        <span style="color: var(--tv-color-text-secondary);">Open</span>
+                        <span>176.23</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                        <span style="color: var(--tv-color-text-secondary);">High</span>
+                        <span>179.45</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                        <span style="color: var(--tv-color-text-secondary);">Low</span>
+                        <span>175.89</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                        <span style="color: var(--tv-color-text-secondary);">Volume</span>
+                        <span>45.2M</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                        <span style="color: var(--tv-color-text-secondary);">Market Cap</span>
+                        <span>2.85T</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // Initialize TradingView Advanced Chart
+        function initTradingViewChart() {
+            new TradingView.widget({
+                "width": "100%",
+                "height": "100%",
+                "symbol": "NASDAQ:AAPL",
+                "interval": "D",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#1e222d",
+                "enable_publishing": false,
+                "withdateranges": true,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": true,
+                "watchlist": ["AAPL", "GOOGL", "TSLA", "BTCUSD", "ETHUSD"],
+                "details": true,
+                "hotlist": true,
+                "calendar": true,
+                "studies": [
+                    "MACD@tv-basicstudies",
+                    "RSI@tv-basicstudies",
+                    "Volume@tv-basicstudies"
+                ],
+                "container_id": "tv-chart",
+                "show_popup_button": true,
+                "popup_width": "1000",
+                "popup_height": "650"
+            });
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initTradingViewChart();
+            
+            // Handle timeframe buttons
+            document.querySelectorAll('.tv-timeframe-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelector('.tv-timeframe-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                });
+            });
+            
+            // Handle bottom tabs
+            document.querySelectorAll('.tv-bottom-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelector('.tv-bottom-tab.active').classList.remove('active');
+                    this.classList.add('active');
+                    
+                    // Hide all panels
+                    document.querySelectorAll('.tv-panel-content, .tv-news-panel, .tv-screener-panel, .tv-strategy-panel').forEach(panel => {
+                        panel.style.display = 'none';
+                    });
+                    
+                    // Show selected panel
+                    const panelId = this.dataset.panel + '-panel';
+                    const panel = document.getElementById(panelId);
+                    if (panel) panel.style.display = 'block';
+                });
+            });
+            
+            // Handle right tabs
+            document.querySelectorAll('.tv-right-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelector('.tv-right-tab.active').classList.remove('active');
+                    this.classList.add('active');
+                });
+            });
+            
+            // Handle order type buttons
+            document.querySelectorAll('.tv-order-type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelector('.tv-order-type-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                    
+                    // Show/hide price inputs based on order type
+                    const limitGroup = document.getElementById('limitPriceGroup');
+                    const stopGroup = document.getElementById('stopPriceGroup');
+                    
+                    if (this.textContent === 'Limit') {
+                        limitGroup.style.display = 'block';
+                        stopGroup.style.display = 'none';
+                    } else if (this.textContent === 'Stop') {
+                        limitGroup.style.display = 'none';
+                        stopGroup.style.display = 'block';
+                    } else {
+                        limitGroup.style.display = 'none';
+                        stopGroup.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Handle indicators button
+            document.getElementById('indicatorsBtn').addEventListener('click', function() {
+                const panel = document.getElementById('indicatorsPanel');
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            // Close indicators panel when clicking outside
+            document.addEventListener('click', function(e) {
+                const panel = document.getElementById('indicatorsPanel');
+                const btn = document.getElementById('indicatorsBtn');
+                if (!panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+                    panel.style.display = 'none';
+                }
+            });
+            
+            // Simulate real-time price updates
+            setInterval(() => {
+                document.querySelectorAll('.tv-watchlist-item').forEach(item => {
+                    const priceEl = item.querySelector('.tv-price-value');
+                    const changeEl = item.querySelector('.tv-price-change');
+                    
+                    if (priceEl) {
+                        const currentPrice = parseFloat(priceEl.textContent.replace(',', ''));
+                        const change = (Math.random() - 0.5) * 2;
+                        const newPrice = currentPrice + change;
+                        priceEl.textContent = newPrice.toFixed(2);
+                        
+                        if (changeEl) {
+                            const changePercent = (Math.random() - 0.5) * 5;
+                            changeEl.textContent = (changePercent >= 0 ? '+' : '') + changePercent.toFixed(2) + '%';
+                            changeEl.className = 'tv-price-change ' + (changePercent >= 0 ? 'positive' : 'negative');
+                        }
+                    }
+                });
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
