@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraQuant ∞ - Quantum Trading Platform</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/tradingview-style.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/charts.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/help.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+    
+    <!-- External Libraries -->
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment-timezone@0.5.43/builds/moment-timezone-with-data.min.js"></script>
+    
+    <!-- TradingView Widget -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    
+    <style>
+        /* AuraQuant Quantum Theme as per spec */
+        :root {
+            --quantum-bg: #0B0F1A;
+            --quantum-darker: #060810;
+            --lime-green: #00FF99;
+            --neon-pink: #FF00CC;
+            --cyan: #00FFFF;
+            --gold: #FFAA00;
+            --red-alert: #FF3366;
+            --success: #00FF99;
+            --warning: #FFAA00;
+            --danger: #FF3366;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--quantum-bg);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        
+        /* Animated Infinity Logo */
+        @keyframes infinityRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% { 
+                filter: drop-shadow(0 0 20px var(--lime-green));
+                opacity: 1;
+            }
+            50% { 
+                filter: drop-shadow(0 0 40px var(--neon-pink));
+                opacity: 0.8;
+            }
+        }
+        
+        .infinity-logo {
+            width: 40px;
+            height: 40px;
+            animation: infinityRotate 10s linear infinite, glowPulse 2s ease-in-out infinite;
+        }
+        
+        /* Login Screen */
+        #loginScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--quantum-bg) 0%, #1a0033 50%, var(--quantum-bg) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        
+        .login-container {
+            background: rgba(11, 15, 26, 0.95);
+            border: 2px solid transparent;
+            background-image: linear-gradient(var(--quantum-bg), var(--quantum-bg)), 
+                              linear-gradient(90deg, var(--lime-green), var(--neon-pink));
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            border-radius: 20px;
+            padding: 50px;
+            width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 255, 153, 0.3);
+        }
+        
+        /* Header Bar */
+        .header-bar {
+            height: 60px;
+            background: linear-gradient(90deg, rgba(11, 15, 26, 0.95), rgba(26, 0, 51, 0.95));
+            border-bottom: 1px solid rgba(0, 255, 153, 0.3);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+        
+        /* Screen Tabs */
+        .screen-tabs {
+            display: flex;
+            gap: 5px;
+            flex: 1;
+            margin: 0 20px;
+            overflow-x: auto;
+        }
+        
+        .screen-tab {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: #888;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .screen-tab:hover {
+            background: rgba(0, 255, 153, 0.1);
+            color: white;
+        }
+        
+        .screen-tab.active {
+            background: linear-gradient(135deg, rgba(0, 255, 153, 0.2), rgba(255, 0, 204, 0.2));
+            color: var(--lime-green);
+            box-shadow: 0 -2px 10px rgba(0, 255, 153, 0.3);
+        }
+        
+        .screen-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--lime-green), var(--neon-pink));
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            height: calc(100vh - 60px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .screen-content {
+            display: none;
+            height: 100%;
+            overflow: auto;
+            padding: 20px;
+        }
+        
+        .screen-content.active {
+            display: block;
+        }
+        
+        /* Trading Panel */
+        .trading-panel {
+            height: 100%;
+            display: grid;
+            grid-template-columns: 200px 1fr 350px;
+            gap: 10px;
+        }
+        
+        /* Watchlist */
+        .watchlist {
+            background: rgba(11, 15, 26, 0.8);
+            border: 1px solid rgba(0, 255, 153, 0.2);
+            border-radius: 8px;
+            overflow-y: auto;
+        }
+        
+        .watchlist-item {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .watchlist-item:hover {
+            background: rgba(0, 255, 153, 0.1);
+        }
+        
+        /* Chart Container */
+        .chart-main {
+            background: rgba(11, 15, 26, 0.8);
+            border: 1px solid rgba(0, 255, 153, 0.2);
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        /* Order Panel */
+        .order-panel {
+            background: rgba(11, 15, 26, 0.8);
+            border: 1px solid rgba(0, 255, 153, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        /* Bot Status Floating Panel */
+        .bot-status-panel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 320px;
+            background: rgba(11, 15, 26, 0.95);
+            border: 2px solid transparent;
+            background-image: linear-gradient(var(--quantum-bg), var(--quantum-bg)), 
+                              linear-gradient(180deg, var(--lime-green), var(--neon-pink));
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 255, 153, 0.2);
+        }
+        
+        /* Screener Grid */
+        .screener-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .screener-card {
+            background: rgba(11, 15, 26, 0.8);
+            border: 1px solid rgba(0, 255, 153, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+        
+        .screener-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 153, 0.3);
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--lime-green), var(--neon-pink));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 5px 20px rgba(0, 255, 153, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--quantum-bg);
+        }
+        
+        /* Input Fields */
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 153, 0.3);
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--lime-green);
+            box-shadow: 0 0 10px rgba(0, 255, 153, 0.3);
+        }
+        
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--quantum-bg);
+            border: 2px solid rgba(0, 255, 153, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen">
+        <div class="login-container">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <!-- Animated Infinity Logo -->
+                <svg class="infinity-logo" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="infinityGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00FF99">
+                                <animate attributeName="stop-color" values="#00FF99;#FF00CC;#00FF99" dur="3s" repeatCount="indefinite" />
+                            </stop>
+                            <stop offset="100%" style="stop-color:#FF00CC">
+                                <animate attributeName="stop-color" values="#FF00CC;#00FF99;#FF00CC" dur="3s" repeatCount="indefinite" />
+                            </stop>
+                        </linearGradient>
+                    </defs>
+                    <path d="M25,25 Q15,10 25,25 T50,25 Q60,40 50,25 T75,25 Q85,10 75,25 T50,25" 
+                          stroke="url(#infinityGrad)" stroke-width="3" fill="none" opacity="0.9"/>
+                </svg>
+                <h1 style="margin: 20px 0 10px; color: white; font-size: 32px; font-weight: 300;">AuraQuant ∞</h1>
+                <p style="color: #888; margin: 0;">Quantum Trading Platform</p>
+                <p style="color: var(--gold); margin: 5px 0; font-size: 12px;">Target: $1M by December 2025</p>
+            </div>
+            
+            <form id="loginForm">
+                <div style="margin-bottom: 20px;">
+                    <label style="color: #aaa; display: block; margin-bottom: 8px;">Username / Email</label>
+                    <input type="text" class="input-field" id="username" required>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="color: #aaa; display: block; margin-bottom: 8px;">Password</label>
+                    <input type="password" class="input-field" id="password" required>
+                </div>
+                <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <label style="color: #aaa;">
+                        <input type="checkbox" id="rememberMe"> Remember me
+                    </label>
+                    <a href="#" style="color: var(--neon-pink); text-decoration: none; font-size: 14px;">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px;">
+                    LOGIN TO PLATFORM
+                </button>
+                <div style="margin-top: 20px; text-align: center; color: #666; font-size: 12px;">
+                    Vault Sync Active | Last Login: <span id="lastLogin">Never</span>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Main Platform (Hidden until login) -->
+    <div id="mainPlatform" style="display: none;">
+        <!-- Header Bar -->
+        <div class="header-bar">
+            <!-- Logo -->
+            <div style="display: flex; align-items: center;">
+                <svg class="infinity-logo" viewBox="0 0 100 50" style="width: 30px; height: 30px; margin-right: 10px;">
+                    <path d="M25,25 Q15,10 25,25 T50,25 Q60,40 50,25 T75,25 Q85,10 75,25 T50,25" 
+                          stroke="url(#infinityGrad)" stroke-width="3" fill="none"/>
+                </svg>
+                <span style="font-size: 18px; font-weight: 600; color: white;">AuraQuant ∞</span>
+            </div>
+            
+            <!-- Screen Tabs -->
+            <div class="screen-tabs">
+                <button class="screen-tab active" data-screen="trading">Trading</button>
+                <button class="screen-tab" data-screen="screener">Screener</button>
+                <button class="screen-tab" data-screen="bot-control">Bot Control</button>
+                <button class="screen-tab" data-screen="brokers">Brokers</button>
+                <button class="screen-tab" data-screen="ai-lab">AI Lab</button>
+                <button class="screen-tab" data-screen="social">Social</button>
+                <button class="screen-tab" data-screen="news">News</button>
+                <button class="screen-tab" data-screen="calendar">Calendar</button>
+                <button class="screen-tab" data-screen="vault">Vault</button>
+                <button class="screen-tab" data-screen="positions">Positions</button>
+                <button class="screen-tab" data-screen="performance">Performance</button>
+                <button class="screen-tab" data-screen="backtest">Backtest</button>
+                <button class="screen-tab" data-screen="settings">Settings</button>
+                <button class="screen-tab" data-screen="help">Help</button>
+            </div>
+            
+            <!-- Right Controls -->
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <!-- Time Display -->
+                <div style="font-size: 12px; color: #888;">
+                    <div>AWST: <span id="awstTime" style="color: var(--lime-green);">--:--</span></div>
+                    <div>NYSE: <span id="nyseTime" style="color: #888;">--:--</span></div>
+                </div>
+                <!-- Mode Indicator -->
+                <div id="modeIndicator" style="padding: 5px 10px; border-radius: 4px; background: rgba(0,255,153,0.2); color: var(--lime-green); font-size: 12px;">
+                    PAPER
+                </div>
+                <!-- Logout -->
+                <button id="logoutBtn" class="btn" style="padding: 8px 16px; background: rgba(255,0,204,0.2); color: var(--neon-pink);">
+                    <i class="fas fa-power-off"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Trading Screen -->
+            <div class="screen-content active" id="trading-screen">
+                <div class="trading-panel">
+                    <!-- Watchlist -->
+                    <div class="watchlist">
+                        <div style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <h3 style="margin: 0; font-size: 14px; color: var(--lime-green);">WATCHLIST</h3>
+                        </div>
+                        <div id="watchlistItems">
+                            <div class="watchlist-item">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div>
+                                        <div style="font-weight: 600;">BTCUSD</div>
+                                        <div style="font-size: 11px; color: #888;">Bitcoin</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div>42,345.67</div>
+                                        <div style="color: var(--success); font-size: 12px;">+2.34%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="watchlist-item">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div>
+                                        <div style="font-weight: 600;">ETHUSD</div>
+                                        <div style="font-size: 11px; color: #888;">Ethereum</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div>2,234.56</div>
+                                        <div style="color: var(--danger); font-size: 12px;">-1.23%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="watchlist-item">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div>
+                                        <div style="font-weight: 600;">AAPL</div>
+                                        <div style="font-size: 11px; color: #888;">Apple Inc</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div>178.45</div>
+                                        <div style="color: var(--success); font-size: 12px;">+0.89%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart Area -->
+                    <div class="chart-main">
+                        <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; gap: 10px;">
+                                    <select class="input-field" style="width: 150px; padding: 5px;">
+                                        <option>BTCUSD</option>
+                                        <option>ETHUSD</option>
+                                        <option>AAPL</option>
+                                    </select>
+                                    <div style="display: flex; gap: 5px;">
+                                        <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);">1m</button>
+                                        <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);">5m</button>
+                                        <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);">15m</button>
+                                        <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);">1h</button>
+                                        <button class="btn" style="padding: 5px 10px; background: rgba(0,255,153,0.2); color: var(--lime-green);">1D</button>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);"><i class="fas fa-chart-line"></i></button>
+                                    <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);"><i class="fas fa-expand"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="mainChart" style="height: calc(100% - 50px);"></div>
+                    </div>
+                    
+                    <!-- Order Panel -->
+                    <div class="order-panel">
+                        <h3 style="margin: 0 0 20px; color: var(--lime-green);">TRADE EXECUTION</h3>
+                        
+                        <!-- Bot Mode Selector -->
+                        <div style="margin-bottom: 20px;">
+                            <label style="color: #aaa; display: block; margin-bottom: 8px;">Bot Mode</label>
+                            <select class="input-field" id="botModeSelect">
+                                <option value="manual">Manual</option>
+                                <option value="v1">V1 - Conservative</option>
+                                <option value="v6">V6 - Balanced</option>
+                                <option value="v13">V13 - Growth</option>
+                                <option value="v30">V30 - Aggressive</option>
+                                <option value="v40">V40 - Ultra</option>
+                                <option value="v50">V50 - Quantum</option>
+                                <option value="v60">V60 - Hyperdrive</option>
+                                <option value="infinity" style="color: var(--gold);">V∞ - Infinity</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Order Type -->
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                                <button class="btn btn-success" style="flex: 1;">BUY</button>
+                                <button class="btn btn-danger" style="flex: 1;">SELL</button>
+                            </div>
+                            
+                            <div style="display: grid; gap: 10px;">
+                                <input type="number" class="input-field" placeholder="Quantity">
+                                <input type="number" class="input-field" placeholder="Price (leave empty for market)">
+                                <input type="number" class="input-field" placeholder="Stop Loss">
+                                <input type="number" class="input-field" placeholder="Take Profit">
+                            </div>
+                        </div>
+                        
+                        <!-- Execute Button -->
+                        <button class="btn btn-primary" style="width: 100%; padding: 15px;">
+                            EXECUTE TRADE
+                        </button>
+                        
+                        <!-- Risk Display -->
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 6px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: #888;">Risk per trade:</span>
+                                <span style="color: var(--warning);">1.5%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: #888;">Max drawdown:</span>
+                                <span style="color: var(--success);">< 0.000000000001¢</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: #888;">Account risk:</span>
+                                <span style="color: var(--success);">< 2%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Screener Screen -->
+            <div class="screen-content" id="screener-screen">
+                <div style="margin-bottom: 20px;">
+                    <h2 style="color: var(--lime-green); margin: 0 0 10px;">TACTICAL SCREENER SYSTEM</h2>
+                    <p style="color: #888; margin: 0;">Ultra-fast actionable alerts optimized for bot synergy</p>
+                </div>
+                
+                <div class="screener-grid">
+                    <!-- Momentum Squeeze -->
+                    <div class="screener-card" style="border-color: var(--lime-green);">
+                        <h3 style="color: var(--lime-green); margin: 0 0 15px;">⚡ Momentum Squeeze</h3>
+                        <div style="color: #aaa; font-size: 12px; margin-bottom: 15px;">Small/mid caps with explosive volume</div>
+                        <div id="momentumAlerts" style="max-height: 200px; overflow-y: auto;">
+                            <div style="padding: 10px; background: rgba(0,255,153,0.1); border-radius: 4px; margin-bottom: 10px;">
+                                <div style="color: white; font-weight: 600;">$TSLA +6.2%</div>
+                                <div style="color: #888; font-size: 12px;">Float: 42M | Vol: 3.2x | "AI Deal Signed"</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gap Up/Down -->
+                    <div class="screener-card" style="border-color: var(--cyan);">
+                        <h3 style="color: var(--cyan); margin: 0 0 15px;">📈 Gap Up / Gap Down</h3>
+                        <div style="color: #aaa; font-size: 12px; margin-bottom: 15px;">Premarket movers >3% delta</div>
+                        <div id="gapAlerts" style="max-height: 200px; overflow-y: auto;">
+                            <div style="padding: 10px; background: rgba(0,255,255,0.1); border-radius: 4px; margin-bottom: 10px;">
+                                <div style="color: white; font-weight: 600;">$NVDA -4.1%</div>
+                                <div style="color: #888; font-size: 12px;">Premarket Vol: 1.8x | Sector: Semis</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- News Catalyst -->
+                    <div class="screener-card" style="border-color: var(--warning);">
+                        <h3 style="color: var(--warning); margin: 0 0 15px;">📰 News Catalyst</h3>
+                        <div style="color: #aaa; font-size: 12px; margin-bottom: 15px;">Headlines linked to price action</div>
+                        <div id="newsAlerts" style="max-height: 200px; overflow-y: auto;">
+                            <div style="padding: 10px; background: rgba(255,170,0,0.1); border-radius: 4px; margin-bottom: 10px;">
+                                <div style="color: white; font-weight: 600;">$AAPL</div>
+                                <div style="color: #888; font-size: 12px;">"Earnings Beat: +12% YoY" | Vol: 2.4x</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Halt Watch -->
+                    <div class="screener-card" style="border-color: var(--danger);">
+                        <h3 style="color: var(--danger); margin: 0 0 15px;">⛔ Halt Watch</h3>
+                        <div style="color: #aaa; font-size: 12px; margin-bottom: 15px;">Halted stocks with resume tracking</div>
+                        <div id="haltAlerts" style="max-height: 200px; overflow-y: auto;">
+                            <div style="padding: 10px; background: rgba(255,51,102,0.1); border-radius: 4px; margin-bottom: 10px;">
+                                <div style="color: white; font-weight: 600;">$GME</div>
+                                <div style="color: #888; font-size: 12px;">Halted @ 09:42 | Reason: Volatility | Resume: TBD</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bot Control Screen -->
+            <div class="screen-content" id="bot-control-screen">
+                <h2 style="color: var(--lime-green); margin: 0 0 20px;">BOT INTELLIGENCE LAB</h2>
+                
+                <div class="grid-3">
+                    <!-- Bot Status -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="color: var(--lime-green); margin: 0 0 15px;">Current Status</h3>
+                        <div style="display: grid; gap: 10px;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Mode:</span>
+                                <span style="color: var(--gold);">V∞ Infinity</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Status:</span>
+                                <span style="color: var(--success);">ACTIVE</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Trades Today:</span>
+                                <span>42</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Win Rate:</span>
+                                <span style="color: var(--success);">87.3%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Strategies -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="color: var(--lime-green); margin: 0 0 15px;">Active Strategies</h3>
+                        <div style="display: grid; gap: 10px;">
+                            <div style="padding: 10px; background: rgba(0,255,153,0.1); border-radius: 4px;">
+                                <div style="font-weight: 600;">MA Crossover</div>
+                                <div style="color: #888; font-size: 12px;">EMA 9/21 on 15m</div>
+                            </div>
+                            <div style="padding: 10px; background: rgba(0,255,153,0.1); border-radius: 4px;">
+                                <div style="font-weight: 600;">RSI Divergence</div>
+                                <div style="color: #888; font-size: 12px;">RSI 14 on 1h</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="color: var(--lime-green); margin: 0 0 15px;">Controls</h3>
+                        <div style="display: grid; gap: 10px;">
+                            <button class="btn btn-success" style="width: 100%;">START BOT</button>
+                            <button class="btn btn-danger" style="width: 100%;">EMERGENCY STOP</button>
+                            <button class="btn" style="width: 100%; background: rgba(255,255,255,0.1);">PAUSE</button>
+                            <button class="btn" style="width: 100%; background: rgba(255,0,204,0.2); color: var(--neon-pink);">MANUAL OVERRIDE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Brokers Screen -->
+            <div class="screen-content" id="brokers-screen">
+                <h2 style="color: var(--lime-green); margin: 0 0 20px;">BROKER & BANK ACCESS</h2>
+                <p style="color: #888; margin: 0 0 20px;">Securely connect your trading accounts, banking portals, and vaults</p>
+                
+                <div class="grid-3">
+                    <!-- Crypto.com -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="margin: 0 0 15px;">Crypto.com</h3>
+                        <div style="color: #888; font-size: 12px; margin-bottom: 15px;">Spot, DeFi, NFTs</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <span style="color: var(--success);">● Connected</span>
+                            <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);">Settings</button>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="window.open('https://web.crypto.com/login', '_blank')">Login</button>
+                    </div>
+                    
+                    <!-- Binance -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="margin: 0 0 15px;">Binance</h3>
+                        <div style="color: #888; font-size: 12px; margin-bottom: 15px;">Spot, Margin, Futures</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <span style="color: var(--success);">● Connected</span>
+                            <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);">Settings</button>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="window.open('https://accounts.binance.com/en/login', '_blank')">Login</button>
+                    </div>
+                    
+                    <!-- Alpaca -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="margin: 0 0 15px;">Alpaca</h3>
+                        <div style="color: #888; font-size: 12px; margin-bottom: 15px;">Stocks, Crypto, Paper/Live</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <span style="color: #888;">● Disconnected</span>
+                            <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);">Settings</button>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="window.open('https://app.alpaca.markets/login', '_blank')">Login</button>
+                    </div>
+                    
+                    <!-- NAB -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="margin: 0 0 15px;">NAB Bank</h3>
+                        <div style="color: #888; font-size: 12px; margin-bottom: 15px;">Internet Banking + nabtrade</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <span style="color: #888;">● Disconnected</span>
+                            <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);">Settings</button>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="window.open('https://ib.nab.com.au/login', '_blank')">Login</button>
+                    </div>
+                    
+                    <!-- Interactive Brokers -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="margin: 0 0 15px;">Interactive Brokers</h3>
+                        <div style="color: #888; font-size: 12px; margin-bottom: 15px;">Global Markets</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <span style="color: #888;">● Disconnected</span>
+                            <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);">Settings</button>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="window.open('https://www.interactivebrokers.com.au/sso/Login', '_blank')">Login</button>
+                    </div>
+                    
+                    <!-- Plus500 -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="margin: 0 0 15px;">Plus500</h3>
+                        <div style="color: #888; font-size: 12px; margin-bottom: 15px;">CFDs (Manual)</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <span style="color: var(--warning);">● Manual Mode</span>
+                            <button class="btn" style="padding: 5px 10px; background: rgba(255,255,255,0.1);">Settings</button>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="window.open('https://app.plus500.com', '_blank')">Login</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Lab Screen -->
+            <div class="screen-content" id="ai-lab-screen">
+                <h2 style="color: var(--lime-green); margin: 0 0 20px;">INTELLIGENCE & SCRIPTING CONTROL</h2>
+                <p style="color: #888; margin: 0 0 20px;">Choose your AI engine or script layer for strategy generation</p>
+                
+                <div class="grid-2">
+                    <!-- AI Engines -->
+                    <div>
+                        <h3 style="color: var(--lime-green); margin: 0 0 15px;">🤖 AI Engines</h3>
+                        <div style="display: grid; gap: 10px;">
+                            <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 15px; cursor: pointer;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-weight: 600;">Claude (Anthropic)</div>
+                                        <div style="color: #888; font-size: 12px;">Long-form reasoning, ethical filters</div>
+                                    </div>
+                                    <input type="radio" name="aiEngine" value="claude">
+                                </div>
+                            </div>
+                            <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 15px; cursor: pointer;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-weight: 600;">ChatGPT (OpenAI)</div>
+                                        <div style="color: #888; font-size: 12px;">Conversational, fast response</div>
+                                    </div>
+                                    <input type="radio" name="aiEngine" value="chatgpt" checked>
+                                </div>
+                            </div>
+                            <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 15px; cursor: pointer;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-weight: 600;">DeepSeek</div>
+                                        <div style="color: #888; font-size: 12px;">Multilingual, financial logic</div>
+                                    </div>
+                                    <input type="radio" name="aiEngine" value="deepseek">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Script Layers -->
+                    <div>
+                        <h3 style="color: var(--lime-green); margin: 0 0 15px;">💻 Script Layers</h3>
+                        <div style="display: grid; gap: 10px;">
+                            <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 15px;">
+                                <div style="font-weight: 600; margin-bottom: 10px;">Python</div>
+                                <div style="color: #888; font-size: 12px; margin-bottom: 10px;">Backtesting, strategy simulation, broker orchestration</div>
+                                <button class="btn btn-primary" style="width: 100%;">Run Python Strategy</button>
+                            </div>
+                            <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 15px;">
+                                <div style="font-weight: 600; margin-bottom: 10px;">PineScript</div>
+                                <div style="color: #888; font-size: 12px; margin-bottom: 10px;">TradingView overlays, custom indicators</div>
+                                <button class="btn btn-primary" style="width: 100%;">Parse PineScript</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Chat Interface -->
+                <div style="margin-top: 30px; background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                    <h3 style="color: var(--lime-green); margin: 0 0 15px;">Strategy Assistant</h3>
+                    <div style="height: 300px; background: rgba(0,0,0,0.3); border-radius: 6px; padding: 15px; overflow-y: auto; margin-bottom: 15px;">
+                        <div style="margin-bottom: 10px;">
+                            <div style="color: var(--lime-green); margin-bottom: 5px;">AI:</div>
+                            <div style="background: rgba(0,255,153,0.1); padding: 10px; border-radius: 6px;">
+                                Ready to generate strategies. Ask me about crossover strategies, RSI divergence, or custom indicators.
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" class="input-field" placeholder="Ask for strategy suggestions..." style="flex: 1;">
+                        <button class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Screen -->
+            <div class="screen-content" id="social-screen">
+                <h2 style="color: var(--lime-green); margin: 0 0 20px;">MULTI-CHANNEL COMMS</h2>
+                <p style="color: #888; margin: 0 0 20px;">Route alerts, diagnostics, and signals across your global channels</p>
+                
+                <div class="grid-3">
+                    <!-- Discord -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="color: #5865F2; margin: 0 0 15px;"><i class="fab fa-discord"></i> Discord</h3>
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: #888; font-size: 12px;">Status</label>
+                            <div style="color: var(--success);">● Connected</div>
+                        </div>
+                        <div style="display: grid; gap: 5px; margin-bottom: 15px;">
+                            <label><input type="checkbox" checked> Alerts</label>
+                            <label><input type="checkbox" checked> Diagnostics</label>
+                            <label><input type="checkbox"> Strategy Logs</label>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;">Test Connection</button>
+                    </div>
+                    
+                    <!-- Telegram -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="color: #0088cc; margin: 0 0 15px;"><i class="fab fa-telegram"></i> Telegram</h3>
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: #888; font-size: 12px;">Status</label>
+                            <div style="color: var(--success);">● Connected</div>
+                        </div>
+                        <div style="display: grid; gap: 5px; margin-bottom: 15px;">
+                            <label><input type="checkbox" checked> Alerts</label>
+                            <label><input type="checkbox" checked> Diagnostics</label>
+                            <label><input type="checkbox" checked> Bot Commands</label>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;">Test Connection</button>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 20px;">
+                        <h3 style="color: #888; margin: 0 0 15px;"><i class="fas fa-envelope"></i> Email</h3>
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: #888; font-size: 12px;">Status</label>
+                            <div style="color: var(--success);">● Connected</div>
+                        </div>
+                        <div style="display: grid; gap: 5px; margin-bottom: 15px;">
+                            <label><input type="checkbox" checked> Trade Logs</label>
+                            <label><input type="checkbox" checked> Reports</label>
+                            <label><input type="checkbox"> Vault Notifications</label>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;">Test Connection</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vault Screen -->
+            <div class="screen-content" id="vault-screen">
+                <h2 style="color: var(--lime-green); margin: 0 0 20px;">SECURE VAULT PANEL</h2>
+                <p style="color: #888; margin: 0 0 20px;">Upload and manage tokens, API keys, and login links (Server-side only)</p>
+                
+                <div style="background: rgba(11,15,26,0.8); border: 1px solid rgba(0,255,153,0.2); border-radius: 8px; padding: 30px;">
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="color: var(--lime-green); margin: 0 0 15px;">Add New Credential</h3>
+                        <div style="display: grid; gap: 15px;">
+                            <select class="input-field">
+                                <option>Select Type...</option>
+                                <option>API Key</option>
+                                <option>OAuth Token</option>
+                                <option>Webhook URL</option>
+                                <option>Login Credentials</option>
+                            </select>
+                            <input type="text" class="input-field" placeholder="Service Name (e.g., Binance)">
+                            <input type="password" class="input-field" placeholder="Key/Token/Password">
+                            <input type="text" class="input-field" placeholder="Secret (if applicable)">
+                            <button class="btn btn-primary">Add to Vault</button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 style="color: var(--lime-green); margin: 0 0 15px;">Stored Credentials</h3>
+                        <div style="display: grid; gap: 10px;">
+                            <div style="padding: 15px; background: rgba(0,255,153,0.1); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 600;">Binance API</div>
+                                    <div style="color: #888; font-size: 12px;">Added: 2025-08-20</div>
+                                </div>
+                                <button class="btn" style="padding: 5px 10px; background: rgba(255,0,0,0.2); color: #ff6666;">Remove</button>
+                            </div>
+                            <div style="padding: 15px; background: rgba(0,255,153,0.1); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 600;">Telegram Bot Token</div>
+                                    <div style="color: #888; font-size: 12px;">Added: 2025-08-19</div>
+                                </div>
+                                <button class="btn" style="padding: 5px 10px; background: rgba(255,0,0,0.2); color: #ff6666;">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Other screens would continue here... -->
+            
+        </div>
+    </div>
+    
+    <!-- Bot Status Floating Panel -->
+    <div class="bot-status-panel" id="botStatusPanel" style="display: none;">
+        <h4 style="margin: 0 0 15px; color: var(--lime-green);">BOT STATUS</h4>
+        <div style="display: grid; gap: 10px;">
+            <div style="display: flex; justify-content: space-between;">
+                <span>Mode:</span>
+                <span id="botModeStatus" style="color: var(--gold);">V∞ Infinity</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>P&L Today:</span>
+                <span id="botPnL" style="color: var(--success);">+$2,345.67</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Drawdown:</span>
+                <span id="botDrawdown" style="color: var(--success);">0.0001%</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Next Action:</span>
+                <span id="botNextAction" style="color: #888;">Scanning...</span>
+            </div>
+        </div>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <div style="font-size: 12px; color: #888; margin-bottom: 5px;">Progress to $1M</div>
+            <div style="background: rgba(0,0,0,0.3); border-radius: 4px; height: 8px; overflow: hidden;">
+                <div style="background: linear-gradient(90deg, var(--lime-green), var(--neon-pink)); height: 100%; width: 12%; transition: width 0.5s;"></div>
+            </div>
+            <div style="font-size: 11px; color: #666; margin-top: 5px;">$120,000 / $1,000,000</div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script>
+        // Initialize Lightweight Charts
+        let chart = null;
+        let candlestickSeries = null;
+        let volumeSeries = null;
+        
+        // Login Handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple validation (in production, this would be server-side)
+            if (username && password) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainPlatform').style.display = 'block';
+                document.getElementById('botStatusPanel').style.display = 'block';
+                
+                // Initialize chart
+                initializeChart();
+                
+                // Start time updates
+                updateTimes();
+                setInterval(updateTimes, 1000);
+                
+                // Save last login
+                localStorage.setItem('lastLogin', new Date().toISOString());
+            }
+        });
+        
+        // Initialize Chart
+        function initializeChart() {
+            const chartContainer = document.getElementById('mainChart');
+            if (!chartContainer) return;
+            
+            chart = LightweightCharts.createChart(chartContainer, {
+                width: chartContainer.clientWidth,
+                height: chartContainer.clientHeight,
+                layout: {
+                    background: { color: 'transparent' },
+                    textColor: '#888',
+                },
+                grid: {
+                    vertLines: { color: 'rgba(255, 255, 255, 0.05)' },
+                    horzLines: { color: 'rgba(255, 255, 255, 0.05)' },
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal,
+                },
+                rightPriceScale: {
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                },
+                timeScale: {
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    timeVisible: true,
+                    secondsVisible: false,
+                },
+            });
+            
+            candlestickSeries = chart.addCandlestickSeries({
+                upColor: '#00FF99',
+                downColor: '#FF3366',
+                borderUpColor: '#00FF99',
+                borderDownColor: '#FF3366',
+                wickUpColor: '#00FF99',
+                wickDownColor: '#FF3366',
+            });
+            
+            // Generate sample data
+            const data = generateSampleData();
+            candlestickSeries.setData(data);
+            
+            // Add volume
+            volumeSeries = chart.addHistogramSeries({
+                color: '#26a69a',
+                priceFormat: {
+                    type: 'volume',
+                },
+                priceScaleId: '',
+                scaleMargins: {
+                    top: 0.8,
+                    bottom: 0,
+                },
+            });
+            
+            const volumeData = data.map(d => ({
+                time: d.time,
+                value: Math.random() * 1000000,
+                color: d.close > d.open ? 'rgba(0, 255, 153, 0.3)' : 'rgba(255, 51, 102, 0.3)'
+            }));
+            
+            volumeSeries.setData(volumeData);
+            
+            // Resize chart on window resize
+            window.addEventListener('resize', () => {
+                if (chart && chartContainer) {
+                    chart.applyOptions({ 
+                        width: chartContainer.clientWidth,
+                        height: chartContainer.clientHeight 
+                    });
+                }
+            });
+        }
+        
+        // Generate sample candlestick data
+        function generateSampleData() {
+            const data = [];
+            let basePrice = 42000;
+            const now = Math.floor(Date.now() / 1000);
+            const interval = 3600; // 1 hour
+            
+            for (let i = 100; i >= 0; i--) {
+                const time = now - (i * interval);
+                const open = basePrice + (Math.random() - 0.5) * 1000;
+                const close = open + (Math.random() - 0.5) * 500;
+                const high = Math.max(open, close) + Math.random() * 200;
+                const low = Math.min(open, close) - Math.random() * 200;
+                
+                data.push({
+                    time: time,
+                    open: open,
+                    high: high,
+                    low: low,
+                    close: close
+                });
+                
+                basePrice = close;
+            }
+            
+            return data;
+        }
+        
+        // Screen Tab Navigation
+        document.querySelectorAll('.screen-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active from all tabs
+                document.querySelectorAll('.screen-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.screen-content').forEach(s => s.classList.remove('active'));
+                
+                // Add active to clicked tab
+                this.classList.add('active');
+                const screenId = this.getAttribute('data-screen') + '-screen';
+                const screen = document.getElementById(screenId);
+                if (screen) {
+                    screen.classList.add('active');
+                }
+            });
+        });
+        
+        // Update Times
+        function updateTimes() {
+            const now = new Date();
+            
+            // AWST (UTC+8)
+            const awst = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            document.getElementById('awstTime').textContent = 
+                awst.toISOString().substr(11, 5);
+            
+            // NYSE (EST/EDT)
+            const nyse = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
+            document.getElementById('nyseTime').textContent = 
+                nyse.toTimeString().substr(0, 5);
+        }
+        
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                location.reload();
+            }
+        });
+        
+        // Bot Mode Change
+        document.getElementById('botModeSelect')?.addEventListener('change', function() {
+            const mode = this.value;
+            const modeStatus = document.getElementById('botModeStatus');
+            if (modeStatus) {
+                modeStatus.textContent = this.options[this.selectedIndex].text;
+                if (mode === 'infinity') {
+                    modeStatus.style.color = 'var(--gold)';
+                } else {
+                    modeStatus.style.color = 'var(--lime-green)';
+                }
+            }
+        });
+        
+        // Check for last login
+        window.addEventListener('load', function() {
+            const lastLogin = localStorage.getItem('lastLogin');
+            if (lastLogin) {
+                const date = new Date(lastLogin);
+                document.getElementById('lastLogin').textContent = 
+                    date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            }
+        });
+    </script>
+</body>
+</html>
