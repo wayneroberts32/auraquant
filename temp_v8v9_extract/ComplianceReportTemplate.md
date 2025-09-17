@@ -1,0 +1,1 @@
+Jurisdiction, tax, exchange rules auto-logged per trade.

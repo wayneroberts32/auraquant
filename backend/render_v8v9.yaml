@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: auraquant-v8v9-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main_v8v9:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        value: auraquant-v8v9-sovereign-quantum-infinity-2025
+      - key: ALPACA_KEY
+        sync: false
+      - key: ALPACA_SECRET
+        sync: false
+      - key: BINANCE_KEY
+        sync: false
+      - key: BINANCE_SECRET
+        sync: false
+      - key: TELEGRAM_TOKEN
+        sync: false
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: BOT_ENABLED
+        value: "true"
+      - key: BOT_AUTO_TRADE
+        value: "false"
+      - key: PAPER_TRADING
+        value: "1"
+      - key: V8_MODE
+        value: "ACTIVE"
+      - key: V9_MODE
+        value: "DORMANT"
+      - key: V9_LOCKED
+        value: "true"
+      - key: GOD_PHRASE
+        value: "meggie moo"
+    healthCheckPath: /healthz
+    autoDeploy: false

@@ -1,0 +1,1 @@
+Manual overrides: Pause/Resume, Broker Switch, Force V8, Unlock V9 (phrase+2FA), Reset Password.

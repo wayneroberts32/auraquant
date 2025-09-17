@@ -1,0 +1,1 @@
+Each trade must log: Why, How, Compliance, Risk, Profit Path.

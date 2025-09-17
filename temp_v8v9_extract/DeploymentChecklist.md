@@ -1,0 +1,5 @@
+- [ ] Backend Render deployed
+- [ ] Frontend Cloudflare deployed
+- [ ] MongoDB connected
+- [ ] WebSockets verified
+- [ ] All policies loaded

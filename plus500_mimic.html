@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraQuant Plus500 Mimic - Professional Trading Interface</title>
+    <link rel="stylesheet" href="css/premium.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    
+    <style>
+        /* Plus500 Style Interface */
+        body {
+            background: #1a1a1a;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        .plus500-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            height: 100vh;
+            gap: 1px;
+            background: #2a2a2a;
+        }
+        
+        /* Left Panel - Watchlist */
+        .watchlist-panel {
+            background: #1e1e1e;
+            overflow-y: auto;
+            border-right: 1px solid #333;
+        }
+        
+        .watchlist-header {
+            padding: 15px;
+            background: #252525;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .watchlist-search {
+            width: 100%;
+            padding: 8px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 4px;
+        }
+        
+        .watchlist-tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .watchlist-tab {
+            padding: 5px 10px;
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .watchlist-tab.active {
+            color: #00d4ff;
+            border-bottom: 2px solid #00d4ff;
+        }
+        
+        .watchlist-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #2a2a2a;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .watchlist-item:hover {
+            background: #252525;
+        }
+        
+        .watchlist-item.selected {
+            background: #2a3a4a;
+            border-left: 3px solid #00d4ff;
+        }
+        
+        .symbol-info {
+            flex: 1;
+        }
+        
+        .symbol-name {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .symbol-description {
+            color: #888;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+        
+        .price-info {
+            text-align: right;
+        }
+        
+        .price-value {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .price-change {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        
+        .price-change.positive {
+            color: #00ff88;
+        }
+        
+        .price-change.negative {
+            color: #ff3366;
+        }
+        
+        /* Center Panel - Chart */
+        .chart-panel {
+            background: #1e1e1e;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chart-header {
+            padding: 10px 15px;
+            background: #252525;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chart-title {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .chart-tools {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chart-tool {
+            padding: 5px 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #888;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .chart-tool:hover {
+            background: #2a2a2a;
+            color: white;
+        }
+        
+        .chart-tool.active {
+            background: #00d4ff;
+            color: white;
+            border-color: #00d4ff;
+        }
+        
+        .chart-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        /* Right Panel - Trading */
+        .trading-panel {
+            background: #1e1e1e;
+            border-left: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .trading-header {
+            padding: 15px;
+            background: #252525;
+            border-bottom: 1px solid #333;
+        }
+        
+        .trading-mode-switch {
+            display: flex;
+            background: #1a1a1a;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-btn.active {
+            background: #00d4ff;
+            color: white;
+        }
+        
+        .trading-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .trade-section {
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        
+        .amount-input {
+            width: 100%;
+            padding: 12px;
+            background: #252525;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .leverage-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .leverage-btn {
+            flex: 1;
+            padding: 8px;
+            background: #252525;
+            border: 1px solid #333;
+            color: #888;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .leverage-btn.selected {
+            background: #2a3a4a;
+            color: #00d4ff;
+            border-color: #00d4ff;
+        }
+        
+        .sl-tp-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .sl-tp-input {
+            padding: 8px;
+            background: #252525;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .trade-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .buy-btn, .sell-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .buy-btn {
+            background: #00ff88;
+            color: #1a1a1a;
+        }
+        
+        .sell-btn {
+            background: #ff3366;
+            color: white;
+        }
+        
+        .buy-btn:hover {
+            background: #00cc6a;
+        }
+        
+        .sell-btn:hover {
+            background: #cc2952;
+        }
+        
+        /* Position Summary */
+        .position-summary {
+            background: #252525;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 12px;
+        }
+        
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .summary-value {
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Bottom Status Bar */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: #1a1a1a;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 12px;
+            color: #888;
+            z-index: 100;
+        }
+        
+        .status-item {
+            margin-right: 20px;
+        }
+        
+        .status-value {
+            color: #00d4ff;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="plus500-container">
+        <!-- Left Panel - Watchlist -->
+        <div class="watchlist-panel">
+            <div class="watchlist-header">
+                <input type="text" class="watchlist-search" placeholder="Search instruments...">
+                <div class="watchlist-tabs">
+                    <button class="watchlist-tab active">Popular</button>
+                    <button class="watchlist-tab">Forex</button>
+                    <button class="watchlist-tab">Crypto</button>
+                    <button class="watchlist-tab">Stocks</button>
+                    <button class="watchlist-tab">Indices</button>
+                </div>
+            </div>
+            
+            <div class="watchlist-items">
+                <div class="watchlist-item selected">
+                    <div class="symbol-info">
+                        <div class="symbol-name">BTC/USD</div>
+                        <div class="symbol-description">Bitcoin vs US Dollar</div>
+                    </div>
+                    <div class="price-info">
+                        <div class="price-value">43,256.78</div>
+                        <div class="price-change positive">+2.34%</div>
+                    </div>
+                </div>
+                
+                <div class="watchlist-item">
+                    <div class="symbol-info">
+                        <div class="symbol-name">EUR/USD</div>
+                        <div class="symbol-description">Euro vs US Dollar</div>
+                    </div>
+                    <div class="price-info">
+                        <div class="price-value">1.0856</div>
+                        <div class="price-change negative">-0.12%</div>
+                    </div>
+                </div>
+                
+                <div class="watchlist-item">
+                    <div class="symbol-info">
+                        <div class="symbol-name">AAPL</div>
+                        <div class="symbol-description">Apple Inc.</div>
+                    </div>
+                    <div class="price-info">
+                        <div class="price-value">182.34</div>
+                        <div class="price-change positive">+1.56%</div>
+                    </div>
+                </div>
+                
+                <div class="watchlist-item">
+                    <div class="symbol-info">
+                        <div class="symbol-name">GOLD</div>
+                        <div class="symbol-description">Gold Spot</div>
+                    </div>
+                    <div class="price-info">
+                        <div class="price-value">2,045.30</div>
+                        <div class="price-change positive">+0.45%</div>
+                    </div>
+                </div>
+                
+                <div class="watchlist-item">
+                    <div class="symbol-info">
+                        <div class="symbol-name">US500</div>
+                        <div class="symbol-description">S&P 500 Index</div>
+                    </div>
+                    <div class="price-info">
+                        <div class="price-value">4,567.89</div>
+                        <div class="price-change positive">+0.78%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Center Panel - Chart -->
+        <div class="chart-panel">
+            <div class="chart-header">
+                <div class="chart-title">BTC/USD - Bitcoin</div>
+                <div class="chart-tools">
+                    <button class="chart-tool active">1m</button>
+                    <button class="chart-tool">5m</button>
+                    <button class="chart-tool">15m</button>
+                    <button class="chart-tool">1h</button>
+                    <button class="chart-tool">4h</button>
+                    <button class="chart-tool">1D</button>
+                    <button class="chart-tool"><i class="fas fa-chart-line"></i></button>
+                    <button class="chart-tool"><i class="fas fa-crosshairs"></i></button>
+                </div>
+            </div>
+            <div class="chart-container" id="plus500Chart"></div>
+        </div>
+        
+        <!-- Right Panel - Trading -->
+        <div class="trading-panel">
+            <div class="trading-header">
+                <div class="trading-mode-switch">
+                    <button class="mode-btn active">Trade</button>
+                    <button class="mode-btn">Order</button>
+                    <button class="mode-btn">Positions</button>
+                </div>
+            </div>
+            
+            <div class="trading-content">
+                <div class="trade-section">
+                    <div class="section-title">Amount</div>
+                    <input type="number" class="amount-input" value="1000" min="100" step="100">
+                </div>
+                
+                <div class="trade-section">
+                    <div class="section-title">Leverage</div>
+                    <div class="leverage-selector">
+                        <button class="leverage-btn">1:2</button>
+                        <button class="leverage-btn">1:5</button>
+                        <button class="leverage-btn selected">1:10</button>
+                        <button class="leverage-btn">1:30</button>
+                    </div>
+                </div>
+                
+                <div class="trade-section">
+                    <div class="section-title">Risk Management</div>
+                    <div class="sl-tp-inputs">
+                        <input type="number" class="sl-tp-input" placeholder="Stop Loss">
+                        <input type="number" class="sl-tp-input" placeholder="Take Profit">
+                    </div>
+                </div>
+                
+                <div class="trade-buttons">
+                    <button class="buy-btn">BUY</button>
+                    <button class="sell-btn">SELL</button>
+                </div>
+                
+                <div class="position-summary">
+                    <div class="summary-row">
+                        <span>Required Margin:</span>
+                        <span class="summary-value">$100.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Spread:</span>
+                        <span class="summary-value">12.5</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Overnight Fee:</span>
+                        <span class="summary-value">-$2.50</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Initial Margin:</span>
+                        <span class="summary-value">$100.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <span class="status-item">Balance: <span class="status-value">$10,000.00</span></span>
+        <span class="status-item">Equity: <span class="status-value">$10,245.67</span></span>
+        <span class="status-item">Margin: <span class="status-value">$500.00</span></span>
+        <span class="status-item">Free Margin: <span class="status-value">$9,745.67</span></span>
+        <span class="status-item">Margin Level: <span class="status-value">2049.13%</span></span>
+        <span class="status-item" style="margin-left: auto;">Connected • Real Trading</span>
+    </div>
+    
+    <script>
+        // Initialize Plus500-style chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const chartContainer = document.getElementById('plus500Chart');
+            
+            const chart = LightweightCharts.createChart(chartContainer, {
+                width: chartContainer.clientWidth,
+                height: chartContainer.clientHeight,
+                layout: {
+                    background: { color: '#1e1e1e' },
+                    textColor: '#888',
+                },
+                grid: {
+                    vertLines: { color: '#2a2a2a' },
+                    horzLines: { color: '#2a2a2a' },
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal,
+                },
+                rightPriceScale: {
+                    borderColor: '#333',
+                },
+                timeScale: {
+                    borderColor: '#333',
+                },
+            });
+            
+            const candlestickSeries = chart.addCandlestickSeries({
+                upColor: '#00ff88',
+                downColor: '#ff3366',
+                borderUpColor: '#00ff88',
+                borderDownColor: '#ff3366',
+                wickUpColor: '#00ff88',
+                wickDownColor: '#ff3366',
+            });
+            
+            // Generate sample data
+            const data = [];
+            let basePrice = 43000;
+            const now = Math.floor(Date.now() / 1000);
+            
+            for (let i = 100; i >= 0; i--) {
+                const time = now - (i * 60);
+                const volatility = Math.random() * 0.01;
+                const trend = Math.random() > 0.5 ? 1 : -1;
+                
+                const open = basePrice * (1 + (Math.random() - 0.5) * volatility);
+                const close = open * (1 + trend * Math.random() * volatility);
+                const high = Math.max(open, close) * (1 + Math.random() * volatility * 0.5);
+                const low = Math.min(open, close) * (1 - Math.random() * volatility * 0.5);
+                
+                data.push({ time, open, high, low, close });
+                basePrice = close;
+            }
+            
+            candlestickSeries.setData(data);
+            
+            // Handle resize
+            window.addEventListener('resize', () => {
+                chart.applyOptions({
+                    width: chartContainer.clientWidth,
+                    height: chartContainer.clientHeight
+                });
+            });
+            
+            // Handle watchlist item clicks
+            document.querySelectorAll('.watchlist-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.watchlist-item').forEach(i => i.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    const symbol = this.querySelector('.symbol-name').textContent;
+                    document.querySelector('.chart-title').textContent = symbol + ' - ' + 
+                        this.querySelector('.symbol-description').textContent;
+                });
+            });
+            
+            // Handle tab switches
+            document.querySelectorAll('.watchlist-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.watchlist-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Handle mode switches
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Handle leverage selection
+            document.querySelectorAll('.leverage-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.leverage-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Handle timeframe selection
+            document.querySelectorAll('.chart-tool').forEach(tool => {
+                tool.addEventListener('click', function() {
+                    if (this.textContent && !this.querySelector('i')) {
+                        document.querySelectorAll('.chart-tool').forEach(t => {
+                            if (t.textContent && !t.querySelector('i')) {
+                                t.classList.remove('active');
+                            }
+                        });
+                        this.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

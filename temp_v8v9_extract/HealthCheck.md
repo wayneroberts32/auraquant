@@ -1,0 +1,1 @@
+System components status (to be generated automatically).

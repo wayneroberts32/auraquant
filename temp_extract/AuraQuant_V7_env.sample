@@ -1,0 +1,12 @@
+# AuraQuant V7 Environment Config Sample
+
+MONGO_URI=mongodb+srv://<user>:<password>@cluster
+RENDER_URL=https://auraquant-backend.onrender.com
+CLOUDFLARE_URL=https://ai-auraquant.com
+TELEGRAM_API_KEY=YOUR_TELEGRAM_KEY
+DISCORD_API_KEY=YOUR_DISCORD_KEY
+EMAIL_SMTP=YOUR_EMAIL_CONFIG
+
+# Add any broker/exchange API keys here
+BROKER_API_KEY=YOUR_KEY
+BROKER_API_SECRET=YOUR_SECRET

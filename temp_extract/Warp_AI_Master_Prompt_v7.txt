@@ -1,0 +1,5 @@
+# AuraQuant V7 Supercharged Master Prompt
+
+This is the full system prompt containing trading, compliance, security, UI/UX, business, and engineering policies. Warp must treat this as the ONLY baseline and ignore older prompts.
+
+[Full merged content from Full System Prompt + V7 extensions goes here.]

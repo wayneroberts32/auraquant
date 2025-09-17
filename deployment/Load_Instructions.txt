@@ -1,0 +1,2 @@
+Drop this ZIP into Warp with:
+please scan D:\AuraQuant_Rich_Bot\AI Prompts\AuraQuant_WARP_FINAL_DEPLOY.zip

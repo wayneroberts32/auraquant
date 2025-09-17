@@ -1,0 +1,33 @@
+# AuraQuant V7 File Tree
+
+/backend
+  /auth
+    roles.js
+  /brokers
+    profiles.js
+  /compliance
+    global_rules.js
+  /engine
+    trading_core.js
+    strategy_innovation.js
+    self_heal.js
+  /research
+    ingestion.js
+  /reports
+    compliance.js
+    explainability.js
+    readiness.js
+/frontend
+  /dashboard
+    index.html
+    app.js
+    styles.css
+    HelpCentre.js
+    AIDashboardHub.js
+/docs
+  QuickStart_V7.md
+  WarpInstructions.md
+  BackupPolicy.md
+  FailoverPolicy.md
+  DisasterRecoveryPolicy.md
+  ...
